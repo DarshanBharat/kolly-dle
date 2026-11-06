@@ -2,18 +2,270 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KOLLY-DLE — Tamil Cinema & Tanglish Cultural Mini Arcade</title>
-  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>KOLLY-DLE — Tamil Cinema & Tanglish Mini Puzzle Arcade</title>
   <style>
+    /* =========================================================================
+       KOLLY-DLE PURE EMBEDDED CSS DESIGN SYSTEM (NO EXTERNAL DEPENDENCY)
+       ========================================================================= */
+    :root {
+      --bg: #0d0f12;
+      --card: #161a22;
+      --card-hover: #1f2430;
+      --border: #283040;
+      --text: #f0f3f6;
+      --text-muted: #8b949e;
+      --primary: #f59e0b;
+      --primary-dark: #d97706;
+      --primary-fg: #000000;
+      --success: #16a34a;
+      --warning: #d97706;
+      --absent: #374151;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      line-height: 1.4;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 12px 16px;
+    }
+
+    /* Masthead */
+    header {
+      background-color: var(--card);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 10px 16px;
+    }
+    .header-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand h1 {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .brand-pill {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--primary);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-icon {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: background 0.15s;
+    }
+    .btn-icon:hover { background: var(--card-hover); }
+
+    /* Navigation Tabs */
+    .game-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+    .game-tabs::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      flex: 1 0 auto;
+      white-space: nowrap;
+      padding: 8px 12px;
+      background: var(--bg);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .tab-btn.active {
+      background: var(--primary);
+      color: #000000;
+      border-color: var(--primary);
+      font-weight: 800;
+    }
+
+    /* Sub-nav Category Filters */
+    .theme-filters {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 4px 0;
+      scrollbar-width: none;
+    }
+    .theme-filters::-webkit-scrollbar { display: none; }
+    .filter-btn {
+      flex: 0 0 auto;
+      white-space: nowrap;
+      padding: 5px 10px;
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn.active {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* Stage Header Info Card */
+    .stage-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .stage-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .stage-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .stage-meta h2 {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .stage-meta p {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .stage-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .stage-nav button {
+      padding: 5px 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .stage-counter {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--primary);
+      padding: 0 4px;
+    }
+
+    /* Main Game Surface Card */
+    .game-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Animations */
     @keyframes flipIn {
       0% { transform: rotateX(0deg); }
       50% { transform: rotateX(-90deg); }
       100% { transform: rotateX(0deg); }
     }
     @keyframes popIn {
-      0% { transform: scale(0.85); }
-      50% { transform: scale(1.08); }
+      0% { transform: scale(0.8); }
+      50% { transform: scale(1.1); }
       100% { transform: scale(1); }
     }
     @keyframes shakeRow {
@@ -21,730 +273,849 @@
       20%, 60% { transform: translateX(-6px); }
       40%, 80% { transform: translateX(6px); }
     }
-    @keyframes confettiDrop {
-      0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(120px) rotate(360deg); opacity: 0; }
-    }
-    .tile-pop { animation: popIn 0.14s ease-out forwards; }
-    .tile-flip { animation: flipIn 0.45s ease-in-out forwards; }
-    .row-shake { animation: shakeRow 0.38s ease-in-out; }
+    .tile-pop { animation: popIn 0.12s ease-out forwards; }
+    .tile-flip { animation: flipIn 0.4s ease-in-out forwards; }
+    .row-shake { animation: shakeRow 0.35s ease-in-out; }
 
-    /* Custom Wordle States */
+    /* =========================================================================
+       WORDLE BOARD & TILES
+       ========================================================================= */
+    .wordle-board {
+      display: grid;
+      grid-template-rows: repeat(6, 1fr);
+      gap: 6px;
+      margin: 12px 0 16px 0;
+      user-select: none;
+    }
+    .wordle-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+    }
+    .wordle-tile {
+      width: 48px;
+      height: 48px;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    @media (min-width: 480px) {
+      .wordle-tile {
+        width: 58px;
+        height: 58px;
+        font-size: 24px;
+        border-radius: 10px;
+      }
+    }
+    .wordle-tile.has-char {
+      border-color: #64748b;
+    }
     .state-correct {
-      background-color: #15803d !important;
-      border-color: #15803d !important;
+      background-color: var(--success) !important;
+      border-color: var(--success) !important;
       color: #ffffff !important;
     }
     .state-present {
-      background-color: #b45309 !important;
-      border-color: #b45309 !important;
+      background-color: var(--warning) !important;
+      border-color: var(--warning) !important;
       color: #ffffff !important;
     }
     .state-absent {
-      background-color: #4b5563 !important;
-      border-color: #4b5563 !important;
-      color: #ffffff !important;
+      background-color: var(--absent) !important;
+      border-color: var(--absent) !important;
+      color: #94a3b8 !important;
     }
 
-    /* Connections Tiers */
-    .tier-1 { background-color: rgba(234, 179, 8, 0.18); border-color: rgba(234, 179, 8, 0.55); }
-    .tier-2 { background-color: rgba(22, 163, 74, 0.18); border-color: rgba(22, 163, 74, 0.55); }
-    .tier-3 { background-color: rgba(37, 99, 235, 0.18); border-color: rgba(37, 99, 235, 0.55); }
-    .tier-4 { background-color: rgba(225, 29, 72, 0.18); border-color: rgba(225, 29, 72, 0.55); }
+    /* Virtual Keyboard */
+    .keyboard {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      user-select: none;
+      margin-top: 4px;
+    }
+    .kb-row {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+    }
+    .kb-key {
+      flex: 1;
+      height: 46px;
+      max-width: 40px;
+      border-radius: 6px;
+      background: #252b38;
+      color: var(--text);
+      border: none;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.05s, opacity 0.15s;
+    }
+    .kb-key:active { transform: scale(0.94); }
+    .kb-key.wide {
+      flex: 1.5;
+      max-width: 58px;
+      font-size: 11px;
+    }
+
+    /* Clue & Lore Boxes */
+    .clue-banner {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .clue-banner button {
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .hint-drawer {
+      width: 100%;
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: var(--text);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.5;
+      margin-bottom: 12px;
+      display: none;
+    }
+    .hint-drawer.active { display: block; }
+
+    .lore-card {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid rgba(22, 163, 74, 0.5);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      display: none;
+    }
+    .lore-card.active { display: block; }
+    .lore-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .lore-tag {
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      background: var(--success);
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .lore-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--text);
+    }
+    .lore-body {
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .lore-quote {
+      font-size: 12px;
+      color: var(--primary);
+      font-weight: 700;
+      margin-top: 6px;
+      font-style: italic;
+    }
+    .lore-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .btn-share {
+      flex: 1;
+      padding: 7px 10px;
+      background: var(--primary);
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .btn-next-word {
+      padding: 7px 12px;
+      background: var(--card-hover);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* =========================================================================
+       CONNECTIONS 4x4 GRID
+       ========================================================================= */
+    .quads-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      width: 100%;
+      user-select: none;
+      margin-top: 8px;
+    }
+    @media (max-width: 480px) {
+      .quads-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .quad-item {
+      min-height: 60px;
+      padding: 8px 6px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      line-height: 1.3;
+      transition: all 0.12s;
+    }
+    .quad-item.selected {
+      background: var(--primary);
+      color: #000;
+      border-color: var(--primary);
+      transform: scale(0.98);
+    }
+    .quad-solved-banner {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 6px;
+      text-align: center;
+      border: 1px solid;
+    }
+    .tier-1 { background: rgba(234, 179, 8, 0.2); border-color: #eab308; color: #fef08a; }
+    .tier-2 { background: rgba(22, 163, 74, 0.2); border-color: #16a34a; color: #bbf7d0; }
+    .tier-3 { background: rgba(37, 99, 235, 0.2); border-color: #2563eb; color: #bfdbfe; }
+    .tier-4 { background: rgba(225, 29, 72, 0.2); border-color: #e11d48; color: #fecdd3; }
+    .quad-cat-name { font-size: 12px; font-weight: 900; text-transform: uppercase; }
+    .quad-cat-items { font-size: 11px; font-weight: 700; margin-top: 2px; }
+
+    .quad-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .btn-action {
+      padding: 8px 14px;
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-action.primary {
+      background: var(--primary);
+      color: #000;
+      border-color: var(--primary);
+      font-weight: 900;
+    }
+    .btn-action:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* =========================================================================
+       5x5 CROSSWORD MINI
+       ========================================================================= */
+    .mini-topbar {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .mini-timer {
+      font-family: monospace;
+      font-size: 13px;
+      font-weight: 800;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 4px 8px;
+      border-radius: 6px;
+      color: var(--primary);
+    }
+    .mini-active-clue {
+      width: 100%;
+      background: var(--card-hover);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--primary);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .mini-active-clue-label {
+      font-size: 11px;
+      font-weight: 900;
+      color: var(--primary);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .mini-active-clue-text {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 3px;
+      background: var(--border);
+      padding: 4px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 280px;
+      aspect-ratio: 1 / 1;
+      user-select: none;
+      margin: 0 auto 12px auto;
+    }
+    .mini-cell {
+      position: relative;
+      background: var(--card);
+      color: var(--text);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 900;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .mini-cell.focused {
+      background: var(--primary);
+      color: #000;
+    }
+    .mini-cell.inline-word {
+      background: var(--card-hover);
+    }
+    .mini-num {
+      position: absolute;
+      top: 2px;
+      left: 3px;
+      font-size: 9px;
+      font-weight: 800;
+      opacity: 0.7;
+      line-height: 1;
+    }
+    .mini-clues-container {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    @media (min-width: 560px) {
+      .mini-clues-container {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .mini-clue-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+    }
+    .mini-clue-card h3 {
+      font-size: 11px;
+      font-weight: 900;
+      color: var(--primary);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 4px;
+    }
+    .mini-clue-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .mini-clue-item {
+      font-size: 11px;
+      color: var(--text-muted);
+      cursor: pointer;
+      line-height: 1.3;
+    }
+    .mini-clue-item.active {
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    /* =========================================================================
+       PUNCH DIALOGUE MATCH
+       ========================================================================= */
+    .dialogue-stage {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .quote-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      text-align: center;
+    }
+    .quote-box h3 {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--primary);
+      line-height: 1.4;
+    }
+    .quote-box p {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-top: 4px;
+    }
+    .dialogue-selectors {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .dialogue-col {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .col-header {
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      text-align: center;
+      color: var(--text-muted);
+      padding-bottom: 2px;
+    }
+    .dialogue-btn {
+      padding: 10px 8px;
+      border-radius: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+      line-height: 1.3;
+      transition: all 0.12s;
+    }
+    .dialogue-btn.selected {
+      background: var(--primary);
+      color: #000;
+      border-color: var(--primary);
+    }
+    .dialogue-btn.solved {
+      opacity: 0.35;
+      text-decoration: line-through;
+      pointer-events: none;
+    }
+
+    /* Toast */
+    #toast-box {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary);
+      color: #000;
+      font-size: 12px;
+      font-weight: 900;
+      padding: 8px 16px;
+      border-radius: 999px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    #toast-box.show { opacity: 1; }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 80;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 440px;
+      padding: 18px;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .modal-header h2 { font-size: 16px; font-weight: 900; }
+    .modal-close {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin: 14px 0;
+    }
+    .stat-cell {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 4px;
+      text-align: center;
+    }
+    .stat-val { font-size: 18px; font-weight: 900; color: var(--text); }
+    .stat-lbl { font-size: 10px; color: var(--text-muted); font-weight: 700; margin-top: 2px; }
   </style>
 </head>
-<body class="bg-[var(--background)] text-[var(--foreground)] antialiased min-h-screen flex flex-col selection:bg-amber-500 selection:text-black">
+<body>
 
-  <!-- Header & Masthead -->
-  <header class="border-b border-[var(--border)] bg-[var(--card)] sticky top-0 z-30 shadow-sm">
-    <div class="max-w-5xl mx-auto px-4 py-3 flex flex-col gap-2.5">
-      <!-- Top meta bar -->
-      <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--muted-foreground)] border-b border-[var(--border)] pb-2">
-        <div class="flex items-center gap-2 font-semibold tracking-wider uppercase">
-          <span class="text-amber-500 font-black">🎬 KOLLYWOOD DAILY</span>
-          <span>•</span>
-          <span>CHENNAI • COIMBATORE • MADURAI</span>
-          <span>•</span>
-          <span id="edition-date">DAILY EDITION</span>
+  <!-- Masthead -->
+  <header>
+    <div class="header-inner">
+      <div class="top-bar">
+        <div class="brand">
+          <h1>🎬 KOLLY-DLE</h1>
+          <span class="brand-pill">Tanglish Arcade</span>
         </div>
-        <div class="flex items-center gap-3">
-          <button onclick="openStatsModal()" class="px-2.5 py-1 rounded-md border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] hover:bg-[var(--secondary)] transition font-medium flex items-center gap-1.5">
+        <div class="top-actions">
+          <button onclick="openStatsModal()" class="btn-icon">
             <span>🏆</span>
-            <span>Scorecard</span>
-            <span id="header-streak-badge" class="font-bold text-amber-500">🔥 0</span>
+            <span id="streak-counter" style="color:var(--primary)">🔥 0</span>
           </button>
-          <button onclick="openHelpModal()" class="px-2.5 py-1 rounded-md border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] hover:bg-[var(--secondary)] transition font-medium">
-            How to Play
-          </button>
+          <button onclick="openHelpModal()" class="btn-icon">Help</button>
         </div>
       </div>
 
-      <!-- App Title & Tanglish Category Filters -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-[var(--foreground)] flex items-center gap-2">
-            <span>KOLLY-DLE</span>
-            <span class="text-xs font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full border border-amber-500/40 bg-amber-500/10 text-amber-500">Tanglish Gazette</span>
-          </h1>
-          <p class="text-xs sm:text-sm text-[var(--muted-foreground)] mt-0.5">
-            Wordle & mini-puzzles on Kollywood movies, iconic punch dialogues, Ilaiyaraaja/Anirudh music & Chennai culture!
-          </p>
-        </div>
-
-        <!-- Cinema Theme Filter Pills -->
-        <div class="flex flex-wrap items-center gap-1.5 bg-[var(--background)] p-1 rounded-xl border border-[var(--border)]" role="group">
-          <button onclick="setCinemaFilter('all')" id="fil-all" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-bold transition">
-            ✨ All Tamil Vibes
-          </button>
-          <button onclick="setCinemaFilter('mass')" id="fil-mass" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition">
-            🔥 Mass & Heroes
-          </button>
-          <button onclick="setCinemaFilter('music')" id="fil-music" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition">
-            🎵 Paatu & Kuthu
-          </button>
-          <button onclick="setCinemaFilter('chennai')" id="fil-chennai" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition">
-            ☕ Chennai & Gethu
-          </button>
-        </div>
-      </div>
-
-      <!-- Mini-Game Selection Tabs -->
-      <nav class="flex items-center gap-1.5 sm:gap-2 pt-1 overflow-x-auto" aria-label="Game Tabs">
-        <button onclick="switchGame('wordle')" id="tab-wordle" class="game-tab flex-1 sm:flex-initial px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 border">
-          <span>🟩</span>
-          <span>Kollywoodle</span>
-          <span class="hidden sm:inline text-xs font-normal opacity-75">(5-Letter Wordle)</span>
+      <!-- Main Game Selector Tabs -->
+      <nav class="game-tabs" aria-label="Game Modes">
+        <button onclick="switchGame('wordle')" id="tab-wordle" class="tab-btn active">
+          <span>🟩</span><span>Kollywoodle</span>
         </button>
-        <button onclick="switchGame('quads')" id="tab-quads" class="game-tab flex-1 sm:flex-initial px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 border">
-          <span>🟨</span>
-          <span>Kollywood Connections</span>
-          <span class="hidden sm:inline text-xs font-normal opacity-75">(4x4 Categories)</span>
+        <button onclick="switchGame('quads')" id="tab-quads" class="tab-btn">
+          <span>🟨</span><span>Connections</span>
         </button>
-        <button onclick="switchGame('mini')" id="tab-mini" class="game-tab flex-1 sm:flex-initial px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 border">
-          <span>🏁</span>
-          <span>5x5 Tanglish Mini</span>
-          <span class="hidden sm:inline text-xs font-normal opacity-75">(Speed Crossword)</span>
+        <button onclick="switchGame('mini')" id="tab-mini" class="tab-btn">
+          <span>🏁</span><span>5x5 Mini</span>
         </button>
-        <button onclick="switchGame('dialogues')" id="tab-dialogues" class="game-tab flex-1 sm:flex-initial px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 border">
-          <span>🗣️</span>
-          <span>Punch Dialogue Match</span>
-          <span class="hidden sm:inline text-xs font-normal opacity-75">(Vadivelu & Mass)</span>
+        <button onclick="switchGame('dialogues')" id="tab-dialogues" class="tab-btn">
+          <span>🗣️</span><span>Dialogues</span>
         </button>
       </nav>
+
+      <!-- Sub-theme Quick Filters -->
+      <div class="theme-filters">
+        <button onclick="setThemeFilter('all')" id="fil-all" class="filter-btn active">✨ All Tamil</button>
+        <button onclick="setThemeFilter('mass')" id="fil-mass" class="filter-btn">🔥 Mass & Heroes</button>
+        <button onclick="setThemeFilter('music')" id="fil-music" class="filter-btn">🎵 Paatu & Beats</button>
+        <button onclick="setThemeFilter('chennai')" id="fil-chennai" class="filter-btn">☕ Chennai & Gethu</button>
+      </div>
     </div>
   </header>
 
-  <!-- Main Content Area -->
-  <main class="flex-1 max-w-5xl w-full mx-auto px-4 py-5 flex flex-col gap-4">
+  <!-- Interactive Stage Container -->
+  <main class="container">
 
-    <!-- Subheader Stage / Controls Bar -->
-    <section class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
-      <div class="flex items-start sm:items-center gap-3">
-        <div id="stage-icon" class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-xl shrink-0 font-bold">
-          🎭
+    <!-- Active Stage Info Banner -->
+    <section class="stage-card">
+      <div class="stage-left">
+        <div id="stage-icon" class="stage-badge">🎭</div>
+        <div class="stage-meta">
+          <h2 id="stage-title">KOLLYWOODLE</h2>
+          <p id="stage-subtitle">Guess the 5-letter Tamil cinema term in 6 tries.</p>
         </div>
+      </div>
+      <div class="stage-nav">
+        <button onclick="prevPuzzle()">← Prev</button>
+        <span id="stage-counter" class="stage-counter">#1 / 18</span>
+        <button onclick="nextPuzzle()">Next →</button>
+      </div>
+    </section>
+
+    <!-- GAME 1: KOLLYWOODLE (5-LETTER WORDLE) -->
+    <section id="view-wordle" class="game-card">
+      <div class="clue-banner">
         <div>
-          <div class="flex flex-wrap items-center gap-2">
-            <span id="stage-badge" class="text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded bg-[var(--secondary)] text-[var(--secondary-foreground)]">
-              THALAIVAR & THALAPATHY SPECIAL
-            </span>
-            <span id="stage-theme" class="text-xs text-[var(--muted-foreground)] font-semibold">
-              Tanglish Slang & Cinema Trivia
-            </span>
-          </div>
-          <p id="stage-subtitle" class="text-sm font-bold text-[var(--foreground)] mt-0.5">
-            Guess the 5-letter Tamil cinema / cultural word in 6 attempts!
-          </p>
+          <span style="color:var(--text-muted);font-weight:700;">Director's Clue:</span>
+          <span id="clue-text" style="color:var(--text);font-weight:800;margin-left:4px;">Celebrated title of Ajith Kumar</span>
+        </div>
+        <div style="display:flex;gap:4px;">
+          <button onclick="toggleHintDrawer()">💡 Hint</button>
+          <button onclick="revealWordle()">Solve</button>
         </div>
       </div>
 
-      <!-- Puzzle Index Navigation -->
-      <div class="flex items-center gap-2 self-end sm:self-center shrink-0">
-        <button onclick="prevPuzzle()" class="px-2.5 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] text-xs font-semibold transition">
-          ← Mundhaiya
+      <div id="hint-drawer" class="hint-drawer">
+        <span style="color:var(--primary);font-weight:900;">Clue Details: </span>
+        <span id="hint-long-text">Celebrated title of Ajith Kumar, also meaning leader or head in Tamil. Coined in Dheena (2001).</span>
+      </div>
+
+      <!-- Solved Lore Card -->
+      <div id="lore-card" class="lore-card">
+        <div class="lore-header">
+          <span id="lore-tag" class="lore-tag">SUPER HIT</span>
+          <span id="lore-word" class="lore-title">THALA</span>
+        </div>
+        <p id="lore-desc" class="lore-body">The revered moniker given to Ajith Kumar after the blockbuster movie Dheena (2001).</p>
+        <p id="lore-quote" class="lore-quote">"En vazhi thani vazhi... seendadhey!"</p>
+        <div class="lore-actions">
+          <button onclick="shareWordle()" class="btn-share">Share Result 📋</button>
+          <button onclick="nextPuzzle()" class="btn-next-word">Next Word →</button>
+        </div>
+      </div>
+
+      <!-- 6x5 Board -->
+      <div id="wordle-board" class="wordle-board"></div>
+
+      <!-- On-Screen Keyboard -->
+      <div id="wordle-keyboard" class="keyboard"></div>
+    </section>
+
+    <!-- GAME 2: CONNECTIONS (4x4) -->
+    <section id="view-quads" class="game-card" style="display:none;">
+      <div class="clue-banner">
+        <div>
+          <span style="color:var(--text-muted);font-weight:700;">Lives left:</span>
+          <span id="quads-lives" style="color:var(--primary);font-weight:900;margin-left:4px;">● ● ● ●</span>
+        </div>
+        <button onclick="hintQuads()">💡 Pair 2</button>
+      </div>
+
+      <div id="quads-solved-list" style="width:100%;"></div>
+      <div id="quads-grid" class="quads-grid"></div>
+
+      <div class="quad-controls">
+        <button onclick="shuffleQuads()" class="btn-action">🔀 Shuffle</button>
+        <button onclick="deselectQuads()" class="btn-action">Deselect</button>
+        <button onclick="submitQuads()" id="btn-quads-submit" class="btn-action primary" disabled>Submit (4)</button>
+        <button onclick="revealQuads()" class="btn-action">Reveal</button>
+      </div>
+    </section>
+
+    <!-- GAME 3: 5x5 MINI -->
+    <section id="view-mini" class="game-card" style="display:none;">
+      <div class="mini-topbar">
+        <span id="mini-puzzle-title" style="font-size:12px;font-weight:800;color:var(--primary);">Chennai & Mass Cinema</span>
+        <span id="mini-timer" class="mini-timer">00:00</span>
+        <div style="display:flex;gap:4px;">
+          <button onclick="checkMini()" class="btn-action" style="padding:4px 8px;font-size:11px;">✓ Check</button>
+          <button onclick="solveMini()" class="btn-action" style="padding:4px 8px;font-size:11px;">Solve</button>
+        </div>
+      </div>
+
+      <div onclick="toggleMiniDir()" class="mini-active-clue">
+        <span id="mini-active-label" class="mini-active-clue-label">1 ACROSS</span>
+        <span id="mini-active-text" class="mini-active-clue-text">Tap any square to begin</span>
+        <span style="font-size:11px;color:var(--primary);flex-shrink:0;">⇄</span>
+      </div>
+
+      <div id="mini-grid" class="mini-grid"></div>
+
+      <!-- Virtual Keyboard for Mini -->
+      <div id="mini-keyboard" class="keyboard" style="margin-bottom:12px;"></div>
+
+      <div class="mini-clues-container">
+        <div class="mini-clue-card">
+          <h3>Across Clues</h3>
+          <ul id="mini-clues-across" class="mini-clue-list"></ul>
+        </div>
+        <div class="mini-clue-card">
+          <h3>Down Clues</h3>
+          <ul id="mini-clues-down" class="mini-clue-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAME 4: PUNCH DIALOGUE MATCH -->
+    <section id="view-dialogues" class="game-card" style="display:none;">
+      <div class="dialogue-stage">
+        <div class="quote-box">
+          <span style="font-size:10px;font-weight:900;color:var(--primary);text-transform:uppercase;">SCENE MATCH</span>
+          <h3 id="dm-quote">"Naan oru thadava sonna, nooru thadava sonna madhiri!"</h3>
+          <p id="dm-meaning">(If I say it once, it's equivalent to saying it 100 times!)</p>
+        </div>
+
+        <div class="dialogue-selectors">
+          <div class="dialogue-col">
+            <div class="col-header">1. Select Actor</div>
+            <div id="dm-actors-col" class="dialogue-col"></div>
+          </div>
+          <div class="dialogue-col">
+            <div class="col-header">2. Select Movie</div>
+            <div id="dm-movies-col" class="dialogue-col"></div>
+          </div>
+        </div>
+
+        <button onclick="submitDialogue()" id="btn-dm-submit" class="btn-action primary" style="width:100%;padding:10px;font-size:13px;margin-top:6px;">
+          Lock In Cinema Pair ⚡
         </button>
-        <span id="stage-counter" class="text-xs font-bold px-2.5 py-1 rounded bg-[var(--background)] border border-[var(--border)]">
-          #1 / 18
-        </span>
-        <button onclick="nextPuzzle()" class="px-2.5 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] text-xs font-semibold transition">
-          Adutha →
-        </button>
-      </div>
-    </section>
-
-    <!-- Floating Toast Notifications -->
-    <div id="toast-container" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-2"></div>
-
-    <!-- =========================================================================
-         GAME 1: KOLLYWOODLE (5-LETTER TANGLISH WORDLE)
-         ========================================================================= -->
-    <section id="view-wordle" class="game-view grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-      <!-- Left: Board + Virtual Keyboard -->
-      <div class="lg:col-span-7 bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 sm:p-6 flex flex-col items-center shadow-sm">
-        
-        <!-- Clue / Action Bar -->
-        <div class="w-full flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-[var(--border)]">
-          <div class="flex items-center gap-2">
-            <span id="wordle-category-pill" class="text-xs font-bold px-2.5 py-1 rounded-md bg-amber-500/15 text-amber-500 border border-amber-500/30">
-              🔥 Mass Cinema
-            </span>
-            <span id="wordle-clue-label" class="text-xs text-[var(--muted-foreground)] font-semibold">
-              Tanglish 5-Letter Term
-            </span>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <button onclick="toggleWordleHint()" id="btn-wordle-hint" class="px-2.5 py-1 rounded-md text-xs font-semibold border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] transition flex items-center gap-1">
-              <span>💡</span><span>Cinema Clue</span>
-            </button>
-            <button onclick="revealWordleAnswer()" class="px-2.5 py-1 rounded-md text-xs font-semibold border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] transition">
-              Reveal
-            </button>
-          </div>
-        </div>
-
-        <!-- Hint Box -->
-        <div id="wordle-hint-box" class="hidden w-full mb-4 p-3 rounded-lg bg-[var(--background)] border border-amber-500/40 text-xs sm:text-sm text-[var(--foreground)]">
-          <span class="font-bold uppercase tracking-wider text-amber-500 mr-1.5">Director's Clue:</span>
-          <span id="wordle-hint-text">Celebrated title of Ajith Kumar, also meaning leader / head in Tamil.</span>
-        </div>
-
-        <!-- 6x5 Wordle Board -->
-        <div id="wordle-board" class="grid grid-rows-6 gap-1.5 sm:gap-2 mb-5 select-none" aria-label="Wordle Grid"></div>
-
-        <!-- Solved / Lore Card -->
-        <div id="wordle-lore-card" class="hidden w-full mb-5 p-4 rounded-xl border border-[var(--border)] bg-[var(--background)] shadow-sm">
-          <div class="flex items-center justify-between gap-2 mb-1.5">
-            <div class="flex items-center gap-2">
-              <span id="lore-status-badge" class="text-xs font-bold uppercase px-2 py-0.5 rounded bg-emerald-600 text-white">MASS HIT!</span>
-              <h3 id="lore-word-title" class="text-lg font-black tracking-wide text-[var(--foreground)]">THALA</h3>
-            </div>
-            <div class="flex items-center gap-2">
-              <button onclick="shareWordleResult()" class="px-3 py-1 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold hover:opacity-90 transition">
-                Share Grid 📋
-              </button>
-              <button onclick="nextPuzzle()" class="px-3 py-1 rounded-lg border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] text-xs font-bold hover:bg-[var(--secondary)] transition">
-                Next Word →
-              </button>
-            </div>
-          </div>
-          <p id="lore-definition" class="text-xs sm:text-sm text-[var(--foreground)] font-medium leading-relaxed"></p>
-          <p id="lore-dialogue" class="text-xs text-amber-500 font-semibold italic mt-1.5"></p>
-        </div>
-
-        <!-- Virtual Keyboard -->
-        <div id="wordle-keyboard" class="w-full max-w-md flex flex-col gap-1.5 select-none"></div>
-      </div>
-
-      <!-- Right: Kollywood Cinema Field Guide & Archive -->
-      <aside class="lg:col-span-5 flex flex-col gap-4">
-        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 sm:p-5 shadow-sm">
-          <h2 class="text-sm font-bold uppercase tracking-wider text-[var(--foreground)] flex items-center justify-between">
-            <span>Kollywood Dictionary</span>
-            <span class="text-xs font-normal text-[var(--muted-foreground)]">Tanglish Edition</span>
-          </h2>
-          <p class="text-xs text-[var(--muted-foreground)] mt-1 leading-relaxed">
-            Every 5-letter answer is iconic in Tamil movies or Chennai pop culture. Type any valid 5-letter word to test letters.
-          </p>
-
-          <!-- Quick Cinema Category Switchers -->
-          <div class="mt-3.5 flex flex-col gap-2.5">
-            <div onclick="setCinemaFilter('mass')" class="cursor-pointer p-3 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] transition">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-[var(--foreground)]">🔥 Mass Heroes & Fandom</span>
-                <span class="text-xs text-[var(--muted-foreground)]">6 Words</span>
-              </div>
-              <p class="text-xs text-[var(--muted-foreground)] mt-1">
-                FDFS celebrations, milk abhishekams, cutouts, slow-mo walk BGM & Rajini/Kamal/Vijay/Ajith mass.
-              </p>
-            </div>
-
-            <div onclick="setCinemaFilter('music')" class="cursor-pointer p-3 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] transition">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-[var(--foreground)]">🎵 Music Directors & Kuthu</span>
-                <span class="text-xs text-[var(--muted-foreground)]">6 Words</span>
-              </div>
-              <p class="text-xs text-[var(--muted-foreground)] mt-1">
-                Dappankuthu beats, Ilaiyaraaja preludes, AR Rahman harmonies, Anirudh viral drops & gaana paatu.
-              </p>
-            </div>
-
-            <div onclick="setCinemaFilter('chennai')" class="cursor-pointer p-3 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] transition">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-[var(--foreground)]">☕ Chennai Baashai & Culture</span>
-                <span class="text-xs text-[var(--muted-foreground)]">6 Words</span>
-              </div>
-              <p class="text-xs text-[var(--muted-foreground)] mt-1">
-                Marina beach sundal, filter coffee in dabarah-tumbler, Sowcarpet thalis, auto meter & local gethu.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Solved Words Showcase -->
-        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 sm:p-5 shadow-sm">
-          <div class="flex items-center justify-between mb-2">
-            <h3 class="text-sm font-bold uppercase tracking-wider text-[var(--foreground)]">Wordle Theater Archive</h3>
-            <span id="wordle-solved-count" class="text-xs font-semibold text-[var(--muted-foreground)]">0 / 18 Unlocked</span>
-          </div>
-          <div id="wordle-archive-pills" class="grid grid-cols-3 gap-1.5 max-h-56 overflow-y-auto pr-1"></div>
-        </div>
-      </aside>
-    </section>
-
-    <!-- =========================================================================
-         GAME 2: KOLLYWOOD CONNECTIONS (4x4 PUZZLE)
-         ========================================================================= -->
-    <section id="view-quads" class="game-view hidden flex-col gap-4">
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 sm:p-6 shadow-sm">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-[var(--border)]">
-          <div>
-            <span id="quads-theme-badge" class="text-xs font-bold px-2.5 py-1 rounded-md bg-amber-500/15 text-amber-500 border border-amber-500/30">
-              🎬 Kollywood Board #1
-            </span>
-            <h2 id="quads-board-title" class="text-base sm:text-lg font-bold text-[var(--foreground)] mt-1">
-              Group 16 Tamil cinema items into 4 thematic sets of 4.
-            </h2>
-          </div>
-          <div class="flex items-center gap-3">
-            <div class="flex items-center gap-1.5 text-xs font-semibold text-[var(--muted-foreground)]">
-              <span>Lives left:</span>
-              <div id="quads-mistakes-dots" class="flex items-center gap-1"></div>
-            </div>
-            <button onclick="giveQuadsHint()" class="px-2.5 py-1 rounded-md text-xs font-semibold border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] transition">
-              💡 Hint (Pair 2)
-            </button>
-          </div>
-        </div>
-
-        <!-- Solved Sets -->
-        <div id="quads-solved-list" class="flex flex-col gap-2.5 mb-3"></div>
-
-        <!-- 4x4 Grid -->
-        <div id="quads-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 select-none"></div>
-
-        <!-- Controls -->
-        <div class="flex flex-wrap items-center justify-center gap-2.5 mt-5 pt-4 border-t border-[var(--border)]">
-          <button onclick="shuffleQuads()" class="px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] text-xs sm:text-sm font-semibold transition">
-            🔀 Shuffle Items
-          </button>
-          <button onclick="deselectAllQuads()" class="px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] text-xs sm:text-sm font-semibold transition">
-            Deselect All
-          </button>
-          <button onclick="submitQuadsGuess()" id="btn-quads-submit" class="px-5 py-2 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs sm:text-sm font-bold hover:opacity-90 transition disabled:opacity-40">
-            Submit Group (4)
-          </button>
-          <button onclick="revealAllQuads()" class="px-3.5 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] text-xs font-semibold transition">
-            Reveal All
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- =========================================================================
-         GAME 3: 5x5 TANGLISH MINI CROSSWORD
-         ========================================================================= -->
-    <section id="view-mini" class="game-view hidden grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-      <!-- Left: 5x5 Grid & Virtual Controls -->
-      <div class="lg:col-span-6 bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 sm:p-6 flex flex-col items-center shadow-sm">
-        <div class="w-full flex items-center justify-between gap-2 mb-3 pb-2.5 border-b border-[var(--border)]">
-          <div class="flex items-center gap-2">
-            <span id="mini-title-badge" class="text-xs font-bold px-2.5 py-1 rounded-md bg-amber-500/15 text-amber-500 border border-amber-500/30">
-              5x5 Tanglish Mini
-            </span>
-            <span id="mini-timer" class="text-xs font-mono font-bold px-2 py-1 rounded bg-[var(--background)] border border-[var(--border)]">
-              00:00
-            </span>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <button onclick="checkMiniGrid()" class="px-2.5 py-1 rounded-md border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] text-xs font-semibold transition">
-              ✓ Check
-            </button>
-            <button onclick="revealMiniCell()" class="px-2.5 py-1 rounded-md border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] text-xs font-semibold transition">
-              💡 Letter
-            </button>
-            <button onclick="revealMiniGrid()" class="px-2.5 py-1 rounded-md border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] text-xs font-semibold transition">
-              Solve
-            </button>
-          </div>
-        </div>
-
-        <!-- Active Clue Card -->
-        <div onclick="toggleMiniDirection()" class="w-full mb-4 p-3 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] cursor-pointer flex items-center justify-between gap-2">
-          <div>
-            <span id="mini-active-clue-label" class="text-xs font-black uppercase tracking-wider mr-2 text-amber-500">1 ACROSS</span>
-            <span id="mini-active-clue-text" class="text-xs sm:text-sm font-semibold">Tap any square to begin</span>
-          </div>
-          <span class="text-xs opacity-75 shrink-0">Flip direction ⇄</span>
-        </div>
-
-        <!-- 5x5 Board -->
-        <div id="mini-grid" class="grid grid-cols-5 gap-1 bg-[var(--border)] p-1.5 rounded-xl border border-[var(--border)] w-full max-w-[300px] aspect-square select-none"></div>
-
-        <!-- Mini Virtual Keyboard -->
-        <div id="mini-keyboard" class="w-full max-w-md flex flex-col gap-1.5 mt-4 select-none"></div>
-      </div>
-
-      <!-- Right: Clues Accordion / Lists -->
-      <div class="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
-          <h3 class="text-xs font-black uppercase tracking-wider text-amber-500 border-b border-[var(--border)] pb-2 mb-2.5">
-            Across Clues
-          </h3>
-          <ul id="mini-clues-across" class="flex flex-col gap-1.5 text-xs sm:text-sm"></ul>
-        </div>
-        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
-          <h3 class="text-xs font-black uppercase tracking-wider text-amber-500 border-b border-[var(--border)] pb-2 mb-2.5">
-            Down Clues
-          </h3>
-          <ul id="mini-clues-down" class="flex flex-col gap-1.5 text-xs sm:text-sm"></ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- =========================================================================
-         GAME 4: PUNCH DIALOGUE & VADIVELU MATCH
-         ========================================================================= -->
-    <section id="view-dialogues" class="game-view hidden flex-col gap-4">
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 sm:p-6 shadow-sm">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-[var(--border)]">
-          <div>
-            <span class="text-xs font-bold px-2.5 py-1 rounded-md bg-amber-500/15 text-amber-500 border border-amber-500/30">
-              🗣️ Kollywood Punch & Comedy Match
-            </span>
-            <h2 class="text-base sm:text-lg font-bold text-[var(--foreground)] mt-1">
-              Match the Iconic Dialogue, the Star / Comedian, and the Movie!
-            </h2>
-          </div>
-          <div class="flex items-center gap-2">
-            <span id="dm-score-pill" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-[var(--background)] border border-[var(--border)]">
-              Score: 0 / 6
-            </span>
-            <button onclick="resetDialogueRound()" class="px-3 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] text-xs font-semibold transition">
-              New Round ↻
-            </button>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch">
-          <!-- Left: Current Dialogue Challenge Card -->
-          <div class="md:col-span-5 bg-[var(--background)] border border-[var(--border)] rounded-xl p-5 flex flex-col justify-between">
-            <div>
-              <span id="dm-stage-badge" class="text-xs font-bold uppercase tracking-wider text-amber-500">
-                SCENE #1 OF 6
-              </span>
-              <h3 id="dm-quote-text" class="text-lg sm:text-xl font-black text-[var(--foreground)] mt-2 leading-snug">
-                "Naan oru thadava sonna, nooru thadava sonna madhiri!"
-              </h3>
-              <p id="dm-quote-meaning" class="text-xs text-[var(--muted-foreground)] mt-2 italic">
-                (If I say it once, it's equivalent to saying it a hundred times!)
-              </p>
-            </div>
-
-            <div class="mt-5 flex flex-col gap-2 pt-4 border-t border-[var(--border)]">
-              <div class="flex items-center justify-between text-xs">
-                <span class="font-semibold text-[var(--muted-foreground)]">🎭 Selected Star:</span>
-                <span id="dm-sel-actor" class="font-bold text-[var(--foreground)]">—</span>
-              </div>
-              <div class="flex items-center justify-between text-xs">
-                <span class="font-semibold text-[var(--muted-foreground)]">🎬 Selected Movie:</span>
-                <span id="dm-sel-movie" class="font-bold text-[var(--foreground)]">—</span>
-              </div>
-              <button onclick="submitDialogueMatch()" id="btn-dm-submit" class="mt-3 w-full py-2.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs sm:text-sm font-bold hover:opacity-90 transition">
-                Lock In Cinema Pair ⚡
-              </button>
-            </div>
-          </div>
-
-          <!-- Right: Two Selection Columns (Actors vs Movies) -->
-          <div class="md:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div class="flex flex-col gap-2">
-              <div class="text-xs font-bold uppercase tracking-wider px-2 py-1.5 rounded bg-[var(--secondary)] text-[var(--secondary-foreground)] text-center">
-                Actor / Legend
-              </div>
-              <div id="dm-col-actors" class="flex flex-col gap-2"></div>
-            </div>
-            <div class="flex flex-col gap-2">
-              <div class="text-xs font-bold uppercase tracking-wider px-2 py-1.5 rounded bg-[var(--secondary)] text-[var(--secondary-foreground)] text-center">
-                Kollywood Movie
-              </div>
-              <div id="dm-col-movies" class="flex flex-col gap-2"></div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
 
   </main>
 
-  <!-- Player Stats Modal -->
-  <div id="modal-stats" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
-    <div class="bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] rounded-2xl max-w-md w-full p-5 shadow-2xl">
-      <div class="flex items-center justify-between pb-3 border-b border-[var(--border)]">
-        <h2 class="text-base font-bold flex items-center gap-2">
-          <span>🎟️</span>
-          <span>Kollywood Fan Pass & Stats</span>
-        </h2>
-        <button onclick="closeModals()" class="text-xs font-bold px-2 py-1 rounded border border-[var(--border)] hover:bg-[var(--secondary)]">✕</button>
+  <!-- Toast Notification -->
+  <div id="toast-box">Ready!</div>
+
+  <!-- Stats Modal -->
+  <div id="modal-stats" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>🏆 Kollywood Fan Scorecard</h2>
+        <button onclick="closeModals()" class="modal-close">✕</button>
       </div>
-      <div class="grid grid-cols-4 gap-2 my-4 text-center">
-        <div class="p-3 rounded-xl bg-[var(--background)] border border-[var(--border)]">
-          <div id="stat-played" class="text-xl font-black">0</div>
-          <div class="text-xs text-[var(--muted-foreground)]">Played</div>
-        </div>
-        <div class="p-3 rounded-xl bg-[var(--background)] border border-[var(--border)]">
-          <div id="stat-winpct" class="text-xl font-black">100%</div>
-          <div class="text-xs text-[var(--muted-foreground)]">Hit %</div>
-        </div>
-        <div class="p-3 rounded-xl bg-[var(--background)] border border-[var(--border)]">
-          <div id="stat-streak" class="text-xl font-black text-amber-500">0</div>
-          <div class="text-xs text-[var(--muted-foreground)]">Streak</div>
-        </div>
-        <div class="p-3 rounded-xl bg-[var(--background)] border border-[var(--border)]">
-          <div id="stat-quads" class="text-xl font-black">0</div>
-          <div class="text-xs text-[var(--muted-foreground)]">Quads Won</div>
-        </div>
+      <div class="stat-grid">
+        <div class="stat-cell"><div id="stat-played" class="stat-val">0</div><div class="stat-lbl">Played</div></div>
+        <div class="stat-cell"><div id="stat-winpct" class="stat-val">100%</div><div class="stat-lbl">Win %</div></div>
+        <div class="stat-cell"><div id="stat-streak" class="stat-val" style="color:var(--primary)">0</div><div class="stat-lbl">Streak</div></div>
+        <div class="stat-cell"><div id="stat-quads" class="stat-val">0</div><div class="stat-lbl">Quads</div></div>
       </div>
-      <p class="text-xs text-[var(--muted-foreground)] mb-4">
-        Play Kollywoodle, Connections, 5x5 Minis, and Punch Dialogue match to level up your Tamil cinema rank from "FDFS Fan" to "Cinema Rasigan"!
-      </p>
-      <div class="flex justify-end gap-2">
-        <button onclick="shareWordleResult()" class="px-4 py-2 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold">
-          Copy Score Summary 📋
-        </button>
-        <button onclick="closeModals()" class="px-4 py-2 rounded-lg border border-[var(--border)] text-xs font-semibold">
-          Close
-        </button>
-      </div>
+      <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-bottom:12px;">Play daily Kollywoodle, Connections, and 5x5 Minis to level up your cinema ranking!</p>
+      <button onclick="closeModals()" class="btn-action primary" style="width:100%;">Done</button>
     </div>
   </div>
 
-  <!-- Help / Instructions Modal -->
-  <div id="modal-help" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
-    <div class="bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] rounded-2xl max-w-lg w-full p-5 shadow-2xl max-h-[85vh] overflow-y-auto">
-      <div class="flex items-center justify-between pb-3 border-b border-[var(--border)]">
-        <h2 class="text-base font-bold">How to Play KOLLY-DLE</h2>
-        <button onclick="closeModals()" class="text-xs font-bold px-2 py-1 rounded border border-[var(--border)] hover:bg-[var(--secondary)]">✕</button>
+  <!-- Help Modal -->
+  <div id="modal-help" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>How to Play KOLLY-DLE</h2>
+        <button onclick="closeModals()" class="modal-close">✕</button>
       </div>
-      <div class="flex flex-col gap-3 my-4 text-xs sm:text-sm leading-relaxed">
-        <div class="p-3 rounded-xl bg-[var(--background)] border border-[var(--border)]">
-          <div class="font-bold text-[var(--foreground)] mb-1">🟩 1. Kollywoodle (5-Letter Tanglish Wordle)</div>
-          <p class="text-[var(--muted-foreground)]">
-            Guess the 5-letter Tamil movie / cultural term in 6 tries. Green = right position, Amber = letter is in the word but wrong spot, Gray = not in the word. Every solved puzzle reveals the full movie lore & dialogue!
-          </p>
-        </div>
-        <div class="p-3 rounded-xl bg-[var(--background)] border border-[var(--border)]">
-          <div class="font-bold text-[var(--foreground)] mb-1">🟨 2. Kollywood Connections (4x4)</div>
-          <p class="text-[var(--muted-foreground)]">
-            Group 16 cinema items into 4 secret categories (e.g. <i>Anirudh Chartbusters</i>, <i>Mani Ratnam Classics</i>, <i>Chennai Beach Street Foods</i>, <i>Vadivelu Characters</i>).
-          </p>
-        </div>
-        <div class="p-3 rounded-xl bg-[var(--background)] border border-[var(--border)]">
-          <div class="font-bold text-[var(--foreground)] mb-1">🏁 3. 5x5 Tanglish Mini & 🗣️ Dialogue Match</div>
-          <p class="text-[var(--muted-foreground)]">
-            Solve speed 5x5 crosswords packed with Tamil cinema clues, or match historic punch dialogues like <i>"Vanthenda Paalkaran"</i> and <i>"Building strong, basement weak"</i> to their star and film!
-          </p>
-        </div>
+      <div style="font-size:12px;display:flex;flex-direction:column;gap:10px;color:var(--text);line-height:1.4;">
+        <p><b>🟩 1. Kollywoodle:</b> Guess the 5-letter Tamil cinema / cultural term in 6 tries. Green = right position, Amber = wrong position, Gray = not in word.</p>
+        <p><b>🟨 2. Connections:</b> Group 16 Tamil cinema items into 4 thematic sets of 4 (Rajini hits, Anirudh albums, Vadivelu characters, etc.).</p>
+        <p><b>🏁 3. 5x5 Mini:</b> Bite-sized speed crossword packed with Kollywood directors, songs, and Madras slang.</p>
+        <p><b>🗣️ 4. Dialogues:</b> Match iconic punchlines to the actor and film!</p>
       </div>
-      <div class="flex justify-end">
-        <button onclick="closeModals()" class="px-4 py-2 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold">
-          Start Playing →
-        </button>
-      </div>
+      <button onclick="closeModals()" class="btn-action primary" style="width:100%;margin-top:14px;">Got It!</button>
     </div>
   </div>
 
   <script>
     /* =========================================================================
-       TAMIL CINEMA & CULTURE PUZZLE DATABASE
+       KOLLY-DLE GAME DATA & LOGIC
        ========================================================================= */
     const TAMIL_WORDLES = [
-      // MASS & HEROES
-      {
-        id: 'kw-1', cat: 'mass', word: 'THALA',
-        clue: 'Ultimate mass title of Ajith Kumar, also meaning "Leader" or "Head" in Tamil.',
-        lore: 'THALA: The revered moniker given to Ajith Kumar following the blockbuster movie Dheena (2001) directed by AR Murugadoss.',
-        dialogue: '"En vazhi, thani vazhi!" • Dheena (2001)'
-      },
-      {
-        id: 'kw-2', cat: 'mass', word: 'GETHU',
-        clue: 'Chennai slang for swag, supreme confidence, high pride, or dominance.',
-        lore: 'GETHU: Pure Chennai youth vernacular for walking with supreme attitude and peerless style.',
-        dialogue: '"Gethu kaattuvom da!"'
-      },
-      {
-        id: 'kw-3', cat: 'mass', word: 'VETRI',
-        clue: 'Tamil word for Victory, and the name of director Vetri Maaran (Asuran, Vada Chennai).',
-        lore: 'VETRI: Means victory in Tamil. Also synonymous with modern realistic Tamil cinema auteur Vetri Maaran.',
-        dialogue: '"Jayichitom Maara!" • Soorarai Pottru'
-      },
-      {
-        id: 'kw-4', cat: 'mass', word: 'HEROS',
-        clue: 'The cinematic icons celebrated with 80-foot cutouts in front of Chennai theatres.',
-        lore: 'HEROES / HERO: The central lifeblood of mass Kollywood cinema worship.',
-        dialogue: '"Singam da... Durai Singam!" • Singam'
-      },
-      {
-        id: 'kw-5', cat: 'mass', word: 'THALA', // alternative mass
-        cat: 'mass', word: 'ASURA',
-        clue: 'Dhanush & Vetri Maaran\'s National Award-winning violent rural epic (2019).',
-        lore: 'ASURAN: Blockbuster rural drama showcasing Dhanush as Sivasaami fighting generational oppression.',
-        dialogue: '"Kaadu irundha eduthukuvaanunga, roova irundha pudungikuvaanunga... Padippa mattum tharaathe!"'
-      },
-      {
-        id: 'kw-6', cat: 'mass', word: 'LEOOO', // 5-letter variant for LEO
-        cat: 'mass', word: 'VIKRM',
-        clue: 'Kamal Haasan & Lokesh Kanagaraj\'s 2022 universe blockbuster (5-letter short).',
-        lore: 'VIKRAM: The blockbuster action film that birthed the LCU (Lokesh Cinematic Universe) with Rolex and Dilli.',
-        dialogue: '"Aarambikalangala?" • Kamal Haasan in Vikram'
-      },
+      { id: 'w1', cat: 'mass', word: 'THALA', clue: 'Ajith Kumar\'s title', desc: 'The moniker given to Ajith Kumar after Dheena (2001).', quote: '"En vazhi thani vazhi... seendadhey!"' },
+      { id: 'w2', cat: 'mass', word: 'GETHU', clue: 'Chennai slang for swag / attitude', desc: 'Supreme swag, pride and dominant style in Madras vernacular.', quote: '"Gethu kaattuvom da!"' },
+      { id: 'w3', cat: 'mass', word: 'VETRI', clue: 'Director Maaran & Tamil for Victory', desc: 'Means victory in Tamil; synonymous with auteur Vetri Maaran.', quote: '"Jayichitom Maara!" • Soorarai Pottru' },
+      { id: 'w4', cat: 'mass', word: 'HEROS', clue: 'Protagonists with 80ft cutouts', desc: 'The central lifeblood of mass Tamil cinema worship.', quote: '"Singam da... Durai Singam!"' },
+      { id: 'w5', cat: 'mass', word: 'ASURA', clue: 'Dhanush & Vetri Maaran rural epic', desc: 'National Award-winning drama featuring Dhanush as Sivasaami.', quote: '"Padippa mattum tharaathe!" • Asuran' },
+      { id: 'w6', cat: 'mass', word: 'VIKRM', clue: 'Kamal & Lokesh 2022 blockbuster', desc: 'Action film that established the Lokesh Cinematic Universe (LCU).', quote: '"Aarambikalangala?" • Vikram' },
 
-      // MUSIC & KUTHU
-      {
-        id: 'kw-7', cat: 'music', word: 'KUTHU',
-        clue: 'High-energy folk dance rhythm (Dappankuthu) played with urumee and thavil at FDFS.',
-        lore: 'DAPPANKUTHU: The quintessential fast-paced Tamil percussion beat that sets theatre aisles on fire.',
-        dialogue: '"Vaathi Coming oththu... kuthu!" • Master'
-      },
-      {
-        id: 'kw-8', cat: 'music', word: 'PAATU',
-        clue: 'Tamil word for song / musical track (from Ilaiyaraaja melodies to gaana).',
-        lore: 'PAATU: Music and songs are inseparable from Tamil films, where background scores drive emotions.',
-        dialogue: '"Thenpandi seemayile therodum veedhiyile..." • Nayakan'
-      },
-      {
-        id: 'kw-9', cat: 'music', word: 'GAANA',
-        clue: 'North Chennai street folk song genre celebrated in films from Madras to Attakathi.',
-        lore: 'GAANA: Urban Chennai folk music genre narrating working-class life, philosophy, and heartbreaks.',
-        dialogue: '"Kaasum panamum thudhum... gaana vibe!"'
-      },
-      {
-        id: 'kw-10', cat: 'music', word: 'ANIII', // Anirudh 5 letter
-        cat: 'music', word: 'NAAYI',
-        cat: 'music', word: 'ISAIY',
-        clue: 'Tamil word for "Music" (Isai) — title held by Isaignani Ilaiyaraaja (5-letter variant).',
-        lore: 'ISAI: Music is worshipped in Tamil Nadu, with Ilaiyaraaja revered as the Maestro / Isaignani.',
-        dialogue: '"Raja Raja dhaan!" • Everlasting Maestro'
-      },
-      {
-        id: 'kw-11', cat: 'music', word: 'THALM',
-        clue: 'Rhythm / beat pattern in Carnatic and film music composition.',
-        lore: 'THAALAM: The metric cycle and heartbeat of South Indian musical rhythm.',
-        dialogue: '"Thaalam thaan paatoda uyir!"'
-      },
-      {
-        id: 'kw-12', cat: 'music', word: 'NAAYI', // Tanglish comedy
-        cat: 'music', word: 'KAVIN',
-        clue: 'Young Kollywood hero of "Dada" and "Star", also Tamil word for beauty/radiance.',
-        lore: 'KAVIN: Rising actor who transitioned from TV serials and Bigg Boss to critical Kollywood box office hits.',
-        dialogue: '"Cinema dhaan namakku ellame!"'
-      },
+      { id: 'w7', cat: 'music', word: 'KUTHU', clue: 'Fast-paced street dance beat', desc: 'Quintessential Tamil percussion rhythm that electrifies theatres.', quote: '"Vaathi Coming oththu kuthu!"' },
+      { id: 'w8', cat: 'music', word: 'PAATU', clue: 'Tamil word for song', desc: 'Music drives emotions from Ilaiyaraaja melodies to kuthu.', quote: '"Thenpandi seemayile..." • Nayakan' },
+      { id: 'w9', cat: 'music', word: 'GAANA', clue: 'North Chennai street folk song genre', desc: 'Urban folk music narrating working-class life and philosophy.', quote: '"Kaasum panamum thudhum... gaana vibe!"' },
+      { id: 'w10', cat: 'music', word: 'ISAIY', clue: 'Tamil word for music (Isai)', desc: 'Revered title held by Isaignani Ilaiyaraaja.', quote: '"Raja Raja dhaan!" • The Maestro' },
+      { id: 'w11', cat: 'music', word: 'THALM', clue: 'Rhythm cycle in Carnatic & film', desc: 'The metric heartbeat of South Indian musical composition.', quote: '"Thaalam thaan paatoda uyir!"' },
+      { id: 'w12', cat: 'music', word: 'KAVIN', clue: 'Actor of "Dada" & "Star"', desc: 'Young hero who transitioned from TV to critical box office hits.', quote: '"Cinema dhaan namakku ellame!"' },
 
-      // CHENNAI & GETHU
-      {
-        id: 'kw-13', cat: 'chennai', word: 'MARNA',
-        clue: 'World\'s second-longest urban natural beach in Chennai (short 5 letters).',
-        lore: 'MARINA BEACH: The epicenter of Chennai social life, sundal vendors, political speeches, and movie dates.',
-        dialogue: '"Marina beach sundal saapta dhaan Chennai feel varum!"'
-      },
-      {
-        id: 'kw-14', cat: 'chennai', word: 'CHAIY',
-        clue: 'Evening cutting tea / Sulaimani served at Chennai tea stalls with hot paruppu vadai.',
-        lore: 'CHAI & VADAI: The standard conversation fuel outside every Tamil film studio and preview theatre.',
-        dialogue: '"Bhai, oru cutting tea-yum rendi medhu vadaiyum!"'
-      },
-      {
-        id: 'kw-15', cat: 'chennai', word: 'DULLA',
-        clue: 'Tanglish slang for slow, lifeless, or boring ("Enna pa padam dulla irukku").',
-        lore: 'DULL: Classic Chennai review slang used by fans stepping out of theatre screenings.',
-        dialogue: '"Padam konjam dulla irundhalum BGM thooki niruthiduchu!"'
-      },
-      {
-        id: 'kw-16', cat: 'chennai', word: 'APPIE',
-        clue: 'Chennai slang for "Get lost" or disappearing from the spot instantly.',
-        lore: 'APPIE / APICAR: Classic Madras slang meaning to make a quick exit or escape.',
-        dialogue: '"Irundha sanda varum, silent-aa appie aayidu!"'
-      },
-      {
-        id: 'kw-17', cat: 'chennai', word: 'SOOOR',
-        clue: 'Sudha Kongara & Suriya\'s acclaimed pilot drama (Soorarai Pottru).',
-        lore: 'SOORARAI POTTRU: National Award winning aviation drama inspired by Captain GR Gopinath.',
-        dialogue: '"Kaasu irukuravan mattum thaan parakkanuma?"'
-      },
-      {
-        id: 'kw-18', cat: 'chennai', word: 'BEAST',
-        clue: 'Nelson & Thalapathy Vijay\'s mall-hostage action thriller featuring "Arabic Kuthu".',
-        lore: 'BEAST: Action flick known for Anirudh\'s global smash hit "Arabic Kuthu" and Vijay\'s Veera Raghavan.',
-        dialogue: '"Meaner, leaner, stronger!" • Beast'
-      }
+      { id: 'w13', cat: 'chennai', word: 'MARNA', clue: 'Famous urban Chennai beach', desc: 'Marina Beach: center of Chennai social life and evening sundal.', quote: '"Marina beach sundal saapta dhaan Chennai feel varum!"' },
+      { id: 'w14', cat: 'chennai', word: 'CHAIY', clue: 'Evening cutting tea with vadai', desc: 'Cutting tea served outside studios and preview theatres.', quote: '"Oru cutting tea-yum rendi medhu vadaiyum!"' },
+      { id: 'w15', cat: 'chennai', word: 'DULLA', clue: 'Chennai slang for boring/slow', desc: 'Classic fan review slang for a slow movie.', quote: '"Padam konjam dulla irundhalum BGM thooki niruthiduchu!"' },
+      { id: 'w16', cat: 'chennai', word: 'APPIE', clue: 'Chennai slang for disappearing fast', desc: 'Madras slang meaning to make a quick escape.', quote: '"Silent-aa appie aayidu!"' },
+      { id: 'w17', cat: 'chennai', word: 'SOOOR', clue: 'Suriya\'s pilot film (Soorarai Pottru)', desc: 'National Award-winning aviation drama by Sudha Kongara.', quote: '"Kaasu irukuravan mattum thaan parakkanuma?"' },
+      { id: 'w18', cat: 'chennai', word: 'BEAST', clue: 'Vijay\'s mall thriller (Arabic Kuthu)', desc: 'Nelson flick featuring the global smash hit "Arabic Kuthu".', quote: '"Meaner, leaner, stronger!" • Beast' }
     ];
 
     const TAMIL_QUADS = [
       {
-        id: 'q-kolly-1',
-        title: 'Kollywood Heavyweights & Culture #1',
+        id: 'q1',
+        title: 'Kollywood Heavyweights #1',
         categories: [
-          {
-            tier: 1,
-            name: '👑 Superstar Rajinikanth Blockbusters',
-            desc: 'Timeless Thalaivar box-office monster hits.',
-            items: ['BAASHA', 'PADAYAPPA', 'ANNAMALAI', 'JAILER']
-          },
-          {
-            tier: 2,
-            name: '🔥 Anirudh Ravichander Viral Albums',
-            desc: 'Banger albums composed by the Rockstar Anirudh.',
-            items: ['MASTER', 'VIKRAM', 'THIRUCHITRAMBALAM', 'JAILER']
-          },
-          {
-            tier: 3,
-            name: '☕ Classic Chennai Street Food Staples',
-            desc: 'Things you order at Marina Beach and street kadas.',
-            items: ['THEENGAI SUNDAL', 'KOTHU PAROTTA', 'FILTER COFFEE', 'KUZHI PANIYARAM']
-          },
-          {
-            tier: 4,
-            name: '🎭 Iconic Vadivelu Comedy Alter-Egos',
-            desc: 'Legendary comedy characters immortalized in Tamil memes.',
-            items: ['NAAI SEKAR', 'KAIPULLA', 'ENCOUNTER EKAMBARAM', 'NESAMANI']
-          }
+          { tier: 1, name: '👑 Rajinikanth Classics', desc: 'Iconic Thalaivar blockbusters', items: ['BAASHA', 'PADAYAPPA', 'ANNAMALAI', 'JAILER'] },
+          { tier: 2, name: '🔥 Anirudh Viral Albums', desc: 'Banger soundtracks by Rockstar Anirudh', items: ['MASTER', 'VIKRAM', 'THIRUCHITRAMBALAM', 'BEAST'] },
+          { tier: 3, name: '☕ Chennai Street Foods', desc: 'Staples of Marina Beach & night kadas', items: ['SUNDAL', 'KOTHU PAROTTA', 'FILTER COFFEE', 'PANIYARAM'] },
+          { tier: 4, name: '🎭 Vadivelu Characters', desc: 'Legendary meme comedy personas', items: ['NAAI SEKAR', 'KAIPULLA', 'EKAMBARAM', 'NESAMANI'] }
         ]
       },
       {
-        id: 'q-kolly-2',
-        title: 'Mani Ratnam, LCU & Tamil Cinema Lore',
+        id: 'q2',
+        title: 'Mani Ratnam & LCU #2',
         categories: [
-          {
-            tier: 1,
-            name: '🎥 Legendary Mani Ratnam Masterpieces',
-            desc: 'Classics by the auteur of Indian cinema.',
-            items: ['NAYAKAN', 'THALAPATHI', 'ROJA', 'BOMBAY']
-          },
-          {
-            tier: 2,
-            name: '🕶️ Lokesh Cinematic Universe (LCU) Elements',
-            desc: 'Hallmarks of Lokesh Kanagaraj\'s universe.',
-            items: ['DILLI', 'ROLEX', 'GHOST MASK', 'BIRYANI FEAST']
-          },
-          {
-            tier: 3,
-            name: '🎺 Traditional Tamil Festival & Folk Instruments',
-            desc: 'Native sounds heard during temple thiruvizha.',
-            items: ['NADASWARAM', 'THAVIL', 'PARAI DRUM', 'URUMEE']
-          },
-          {
-            tier: 4,
-            name: '🗣️ Chennai Madras Baashai Slang Words',
-            desc: 'Authentic local expressions spoken on Chennai streets.',
-            items: ['MAMA', 'NASTHI', 'BEJAAR', 'GALATTA']
-          }
+          { tier: 1, name: '🎥 Mani Ratnam Gems', desc: 'Masterpieces by the auteur', items: ['NAYAKAN', 'THALAPATHI', 'ROJA', 'BOMBAY'] },
+          { tier: 2, name: '🕶️ LCU Elements', desc: 'Hallmarks of Lokesh Kanagaraj\'s universe', items: ['DILLI', 'ROLEX', 'GHOST MASK', 'BIRYANI FEAST'] },
+          { tier: 3, name: '🎺 Folk Instruments', desc: 'Heard at temple thiruvizha & kuthu', items: ['NADASWARAM', 'THAVIL', 'PARAI DRUM', 'URUMEE'] },
+          { tier: 4, name: '🗣️ Madras Slang Words', desc: 'Authentic local expressions', items: ['MAMA', 'NASTHI', 'BEJAAR', 'GALATTA'] }
         ]
       }
     ];
 
     const TAMIL_MINIS = [
       {
-        id: 'm-kolly-1',
-        title: 'Chennai & Mass Cinema 5x5',
+        id: 'm1',
+        title: 'Chennai & Mass Cinema',
         grid: [
           ['T','H','A','L','A'],
           ['H','E','R','O','S'],
@@ -753,172 +1124,83 @@
           ['A','S','A','I','I']
         ],
         across: [
-          { num: 1, row: 0, col: 0, len: 5, clue: 'Ajith Kumar\'s revered title / leader in Tamil (5)', ans: 'THALA' },
-          { num: 6, row: 1, col: 0, len: 5, clue: 'Protagonists with giant cutouts outside Rohini theatre (5)', ans: 'HEROS' },
-          { num: 7, row: 2, col: 0, len: 5, clue: 'Dhanush\'s national-award winning Vetri Maaran film (5)', ans: 'ASURA' },
-          { num: 8, row: 3, col: 0, len: 5, clue: 'Master & Vikram director Kanagaraj (first 5) (5)', ans: 'LOKES' },
-          { num: 9, row: 4, col: 0, len: 5, clue: 'Desire or longing in Tamil / poem rhythm (5)', ans: 'ASAII' }
+          { num: 1, row: 0, col: 0, clue: 'Ajith Kumar title / leader (5)', ans: 'THALA' },
+          { num: 6, row: 1, col: 0, clue: 'Protagonists outside Rohini theatre (5)', ans: 'HEROS' },
+          { num: 7, row: 2, col: 0, clue: 'Dhanush Vetri Maaran film (5)', ans: 'ASURA' },
+          { num: 8, row: 3, col: 0, clue: 'Vikram director Kanagaraj (short) (5)', ans: 'LOKES' },
+          { num: 9, row: 4, col: 0, clue: 'Desire or longing in Tamil (5)', ans: 'ASAII' }
         ],
         down: [
-          { num: 1, row: 0, col: 0, len: 5, clue: 'Thalaivar Rajinikanth\'s epic friendship classic with Mammootty (5)', ans: 'THALA' },
-          { num: 2, row: 0, col: 1, len: 5, clue: 'Heated summer afternoon in Madurai or Chennai (5)', ans: 'HESOS' },
-          { num: 3, row: 0, col: 2, len: 5, clue: 'Maestro Rahman\'s initial or music aura (5)', ans: 'ARUKA' },
-          { num: 4, row: 0, col: 3, len: 5, clue: 'Beloved Kollywood comedian or actor (5)', ans: 'LOREI' },
-          { num: 5, row: 0, col: 4, len: 5, clue: 'Traditional Tamil auspicious greeting sound (5)', ans: 'ASASI' }
-        ]
-      },
-      {
-        id: 'm-kolly-2',
-        title: 'Kuthu Beats & Anirudh 5x5',
-        grid: [
-          ['K','U','T','H','U'],
-          ['U','L','A','G','A'],
-          ['T','A','M','I','L'],
-          ['H','G','I','R','L'],
-          ['U','A','L','L','Y']
-        ],
-        across: [
-          { num: 1, row: 0, col: 0, len: 5, clue: 'Fast-paced folk street dance beat (5)', ans: 'KUTHU' },
-          { num: 6, row: 1, col: 0, len: 5, clue: '"___ Nayagan" — Kamal Haasan\'s title (5)', ans: 'ULAGA' },
-          { num: 7, row: 2, col: 0, len: 5, clue: 'The classical language and cinema identity (5)', ans: 'TAMIL' },
-          { num: 8, row: 3, col: 0, len: 5, clue: 'Heroine in an AR Murugadoss commercial entertainer (5)', ans: 'HGIRL' },
-          { num: 9, row: 4, col: 0, len: 5, clue: 'Street or narrow lane where auto drivers hang out (5)', ans: 'UALLY' }
-        ],
-        down: [
-          { num: 1, row: 0, col: 0, len: 5, clue: 'High-energy percussion drum rhythm (5)', ans: 'KUTHU' },
-          { num: 2, row: 0, col: 1, len: 5, clue: 'Tamil world or universe (Ulagam) short (5)', ans: 'ULAGA' },
-          { num: 3, row: 0, col: 2, len: 5, clue: 'Tamil cuisine savory snack / spicy broth (5)', ans: 'TAMIL' },
-          { num: 4, row: 0, col: 3, len: 5, clue: 'Hot filter coffee warmth on a rainy Chennai evening (5)', ans: 'HGIRL' },
-          { num: 5, row: 0, col: 4, len: 5, clue: 'Friend / companion in Chennai slang (5)', ans: 'UALLY' }
+          { num: 1, row: 0, col: 0, clue: 'Thalaivar friendship epic with Mammootty (5)', ans: 'THALA' },
+          { num: 2, row: 0, col: 1, clue: 'Afternoon heat sound in Chennai (5)', ans: 'HESOS' },
+          { num: 3, row: 0, col: 2, clue: 'Maestro Rahman initial aura (5)', ans: 'ARUKA' },
+          { num: 4, row: 0, col: 3, clue: 'Beloved Kollywood comic actor lore (5)', ans: 'LOREI' },
+          { num: 5, row: 0, col: 4, clue: 'Tamil auspicious greeting tone (5)', ans: 'ASASI' }
         ]
       }
     ];
 
     const TAMIL_DIALOGUES = [
-      {
-        quote: '"Naan oru thadava sonna, nooru thadava sonna madhiri!"',
-        meaning: 'If I say it once, it is equivalent to saying it a hundred times!',
-        actor: 'Superstar Rajinikanth',
-        movie: 'Baasha (1995)'
-      },
-      {
-        quote: '"Building strong-u, aana basement weak-u!"',
-        meaning: 'The building looks rock strong, but the foundation is totally weak!',
-        actor: 'Vaigai Puyal Vadivelu',
-        movie: 'Thalainagaram (2006)'
-      },
-      {
-        quote: '"En vazhi... thani vazhi! Seendadhey!"',
-        meaning: 'My path is an independent unique path! Do not cross it!',
-        actor: 'Superstar Rajinikanth',
-        movie: 'Padayappa (1999)'
-      },
-      {
-        quote: '"I am waiting!"',
-        meaning: 'The ultimate calm pre-interval mass showdown declaration.',
-        actor: 'Thalapathy Vijay',
-        movie: 'Thuppakki (2012)'
-      },
-      {
-        quote: '"Vandhootomnu sollu, thirumba vandhootomnu sollu!"',
-        meaning: 'Tell them we have arrived, tell them we are back!',
-        actor: 'Superstar Rajinikanth',
-        movie: 'Kabali (2016)'
-      },
-      {
-        quote: '"Aahaa... oru mudivoda thaan vandhurukkeenga!"',
-        meaning: 'Aha! You have arrived with a strict agenda to ruin me!',
-        actor: 'Vaigai Puyal Vadivelu',
-        movie: 'Friends (Contractor Nesamani)'
-      }
+      { quote: '"Naan oru thadava sonna, nooru thadava sonna madhiri!"', meaning: 'If I say it once, it is equivalent to saying it 100 times!', actor: 'Superstar Rajinikanth', movie: 'Baasha (1995)' },
+      { quote: '"Building strong-u, aana basement weak-u!"', meaning: 'Building looks solid, but foundation is weak!', actor: 'Vadivelu', movie: 'Thalainagaram (2006)' },
+      { quote: '"En vazhi... thani vazhi! Seendadhey!"', meaning: 'My path is an independent path! Do not cross it!', actor: 'Superstar Rajinikanth', movie: 'Padayappa (1999)' },
+      { quote: '"I am waiting!"', meaning: 'The ultimate calm pre-interval mass declaration.', actor: 'Thalapathy Vijay', movie: 'Thuppakki (2012)' },
+      { quote: '"Vandhootomnu sollu, thirumba vandhootomnu sollu!"', meaning: 'Tell them we have arrived, tell them we are back!', actor: 'Superstar Rajinikanth', movie: 'Kabali (2016)' },
+      { quote: '"Aahaa... oru mudivoda thaan vandhurukkeenga!"', meaning: 'Aha! You came with a strict plan to ruin me!', actor: 'Contractor Nesamani', movie: 'Friends (2001)' }
     ];
 
-    /* =========================================================================
-       APPLICATION STATE
-       ========================================================================= */
-    let currentCinemaFilter = 'all'; // 'all' | 'mass' | 'music' | 'chennai'
+    /* APP STATE */
+    let currentTheme = 'all';
     let currentGame = 'wordle';
-
-    // Wordle state
-    let filteredWordles = [...TAMIL_WORDLES];
-    let wordleIndex = 0;
+    let wordleList = [...TAMIL_WORDLES];
+    let wordleIdx = 0;
     let wordleGuesses = [];
-    let currentGuess = '';
-    let wordleStatus = 'playing';
-    let solvedWordleIds = new Set();
+    let curGuess = '';
+    let wordleState = 'playing';
 
-    // Quads state
-    let quadsIndex = 0;
+    let quadsIdx = 0;
     let quadsItems = [];
     let quadsSelected = new Set();
-    let quadsSolvedTiers = [];
-    let quadsMistakes = 4;
+    let quadsSolved = [];
+    let quadsLives = 4;
 
-    // Mini state
-    let miniIndex = 0;
-    let miniUserGrid = [];
-    let miniActiveRow = 0;
-    let miniActiveCol = 0;
-    let miniDir = 'across';
-    let miniSeconds = 0;
-    let miniTimerId = null;
+    let miniIdx = 0;
+    let miniGrid = [];
+    let miniR = 0, miniC = 0, miniDir = 'across';
+    let miniSec = 0, miniTimer = null;
 
-    // Dialogue Match State
-    let dmIndex = 0;
-    let dmScore = 0;
-    let dmSelected = { actor: null, movie: null };
-    let dmSolvedIndices = new Set();
-    let dmShuffledActors = [];
-    let dmShuffledMovies = [];
+    let dmIdx = 0, dmScore = 0;
+    let dmSelActor = null, dmSelMovie = null;
+    let dmSolved = new Set();
 
-    // Global Stats
     let stats = { played: 0, won: 0, streak: 0, quadsWon: 0 };
 
-    /* =========================================================================
-       INITIALIZATION
-       ========================================================================= */
+    /* INIT */
     function init() {
-      const now = new Date();
-      document.getElementById('edition-date').textContent = now.toLocaleDateString('en-US', {
-        month: 'short', day: 'numeric', year: 'numeric'
-      }).toUpperCase();
-
-      setCinemaFilter('all');
+      setThemeFilter('all');
       switchGame('wordle');
-      initDialogueRound();
-
-      window.addEventListener('keydown', handleKeyInput);
+      initDialogue();
+      window.addEventListener('keydown', handleKey);
     }
 
-    function showToast(msg, duration = 2200) {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      toast.className = 'px-4 py-2 rounded-xl bg-amber-500 text-black text-xs sm:text-sm font-black shadow-2xl border border-amber-300 transition-all';
-      toast.textContent = msg;
-      container.appendChild(toast);
-      setTimeout(() => {
-        toast.style.opacity = '0';
-        setTimeout(() => toast.remove(), 250);
-      }, duration);
+    function showToast(msg) {
+      const box = document.getElementById('toast-box');
+      box.textContent = msg;
+      box.classList.add('show');
+      setTimeout(() => box.classList.remove('show'), 2000);
     }
 
-    function setCinemaFilter(filter) {
-      currentCinemaFilter = filter;
-      ['all', 'mass', 'music', 'chennai'].forEach(f => {
-        const btn = document.getElementById(`fil-${f}`);
-        if (f === filter) {
-          btn.className = 'filter-btn px-3 py-1.5 rounded-lg text-xs font-black transition bg-amber-500 text-black shadow-sm';
-        } else {
-          btn.className = 'filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--secondary)]';
-        }
+    function setThemeFilter(theme) {
+      currentTheme = theme;
+      ['all', 'mass', 'music', 'chennai'].forEach(t => {
+        const btn = document.getElementById(`fil-${t}`);
+        if (t === theme) btn.classList.add('active');
+        else btn.classList.remove('active');
       });
 
-      filteredWordles = filter === 'all'
-        ? [...TAMIL_WORDLES]
-        : TAMIL_WORDLES.filter(w => w.cat === filter);
-      wordleIndex = 0;
-
-      loadCurrentPuzzle();
+      wordleList = theme === 'all' ? [...TAMIL_WORDLES] : TAMIL_WORDLES.filter(w => w.cat === theme);
+      wordleIdx = 0;
+      loadWordle(wordleIdx);
     }
 
     function switchGame(game) {
@@ -927,155 +1209,121 @@
         const tab = document.getElementById(`tab-${g}`);
         const view = document.getElementById(`view-${g}`);
         if (g === game) {
-          tab.className = 'game-tab flex-1 sm:flex-initial px-3.5 py-2 rounded-lg text-xs sm:text-sm font-black transition flex items-center justify-center gap-2 border border-amber-500 bg-amber-500 text-black shadow-sm';
-          view.classList.remove('hidden');
-          if (g === 'wordle' || g === 'mini') view.classList.add('grid');
-          else view.classList.add('flex');
+          tab.classList.add('active');
+          view.style.display = 'flex';
         } else {
-          tab.className = 'game-tab flex-1 sm:flex-initial px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-2 border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] hover:bg-[var(--secondary)]';
-          view.classList.add('hidden');
-          view.classList.remove('grid', 'flex');
+          tab.classList.remove('active');
+          view.style.display = 'none';
         }
       });
 
-      loadCurrentPuzzle();
+      if (game === 'wordle') loadWordle(wordleIdx);
+      else if (game === 'quads') loadQuads(quadsIdx);
+      else if (game === 'mini') loadMini(miniIdx);
+      else if (game === 'dialogues') loadDialogue();
     }
 
-    function loadCurrentPuzzle() {
-      if (currentGame === 'wordle') {
-        loadWordle(wordleIndex);
-      } else if (currentGame === 'quads') {
-        loadQuads(quadsIndex);
-      } else if (currentGame === 'mini') {
-        loadMini(miniIndex);
-      } else if (currentGame === 'dialogues') {
-        renderDialogueStage();
-        updateStageMeta('🗣️ PUNCH & COMEDY', 'Iconic Vadivelu & Thalaivar Scenes', 'Match the dialogue to the star and film!', dmIndex + 1, TAMIL_DIALOGUES.length);
-      }
-    }
-
-    function updateStageMeta(badge, theme, subtitle, idx, total) {
-      document.getElementById('stage-badge').textContent = badge;
-      document.getElementById('stage-theme').textContent = theme;
-      document.getElementById('stage-subtitle').textContent = subtitle;
+    function updateStageHeader(icon, title, sub, idx, total) {
+      document.getElementById('stage-icon').textContent = icon;
+      document.getElementById('stage-title').textContent = title;
+      document.getElementById('stage-subtitle').textContent = sub;
       document.getElementById('stage-counter').textContent = `#${idx} / ${total}`;
     }
 
     function prevPuzzle() {
       if (currentGame === 'wordle') {
-        wordleIndex = (wordleIndex - 1 + filteredWordles.length) % filteredWordles.length;
-        loadWordle(wordleIndex);
+        wordleIdx = (wordleIdx - 1 + wordleList.length) % wordleList.length;
+        loadWordle(wordleIdx);
       } else if (currentGame === 'quads') {
-        quadsIndex = (quadsIndex - 1 + TAMIL_QUADS.length) % TAMIL_QUADS.length;
-        loadQuads(quadsIndex);
+        quadsIdx = (quadsIdx - 1 + TAMIL_QUADS.length) % TAMIL_QUADS.length;
+        loadQuads(quadsIdx);
       } else if (currentGame === 'mini') {
-        miniIndex = (miniIndex - 1 + TAMIL_MINIS.length) % TAMIL_MINIS.length;
-        loadMini(miniIndex);
+        miniIdx = (miniIdx - 1 + TAMIL_MINIS.length) % TAMIL_MINIS.length;
+        loadMini(miniIdx);
       } else if (currentGame === 'dialogues') {
-        dmIndex = (dmIndex - 1 + TAMIL_DIALOGUES.length) % TAMIL_DIALOGUES.length;
-        renderDialogueStage();
+        dmIdx = (dmIdx - 1 + TAMIL_DIALOGUES.length) % TAMIL_DIALOGUES.length;
+        loadDialogue();
       }
     }
 
     function nextPuzzle() {
       if (currentGame === 'wordle') {
-        wordleIndex = (wordleIndex + 1) % filteredWordles.length;
-        loadWordle(wordleIndex);
+        wordleIdx = (wordleIdx + 1) % wordleList.length;
+        loadWordle(wordleIdx);
       } else if (currentGame === 'quads') {
-        quadsIndex = (quadsIndex + 1) % TAMIL_QUADS.length;
-        loadQuads(quadsIndex);
+        quadsIdx = (quadsIdx + 1) % TAMIL_QUADS.length;
+        loadQuads(quadsIdx);
       } else if (currentGame === 'mini') {
-        miniIndex = (miniIndex + 1) % TAMIL_MINIS.length;
-        loadMini(miniIndex);
+        miniIdx = (miniIdx + 1) % TAMIL_MINIS.length;
+        loadMini(miniIdx);
       } else if (currentGame === 'dialogues') {
-        dmIndex = (dmIndex + 1) % TAMIL_DIALOGUES.length;
-        renderDialogueStage();
+        dmIdx = (dmIdx + 1) % TAMIL_DIALOGUES.length;
+        loadDialogue();
       }
     }
 
-    /* =========================================================================
-       GAME 1: KOLLYWOODLE
-       ========================================================================= */
+    /* WORDLE */
     function loadWordle(idx) {
-      const p = filteredWordles[idx];
+      const p = wordleList[idx];
       wordleGuesses = [];
-      currentGuess = '';
-      wordleStatus = 'playing';
+      curGuess = '';
+      wordleState = 'playing';
 
-      document.getElementById('wordle-category-pill').textContent = p.cat === 'mass' ? '🔥 Mass Cinema' : (p.cat === 'music' ? '🎵 Paatu & Kuthu' : '☕ Chennai Gethu');
-      document.getElementById('wordle-hint-text').textContent = p.clue;
-      document.getElementById('wordle-hint-box').classList.add('hidden');
-      document.getElementById('wordle-lore-card').classList.add('hidden');
+      document.getElementById('clue-text').textContent = p.clue;
+      document.getElementById('hint-long-text').textContent = `${p.clue}. ${p.desc}`;
+      document.getElementById('hint-drawer').classList.remove('active');
+      document.getElementById('lore-card').classList.remove('active');
 
-      updateStageMeta(
-        `KOLLYWOODLE • ${p.cat.toUpperCase()}`,
-        p.clue.slice(0, 45) + '...',
-        'Guess the 5-letter Tamil cinema / cultural term in 6 tries.',
-        idx + 1,
-        filteredWordles.length
-      );
-
+      updateStageHeader('🟩', `KOLLYWOODLE • ${p.word}`, p.clue, idx + 1, wordleList.length);
       renderWordleBoard();
       renderWordleKeyboard();
-      renderWordleArchive();
     }
 
     function renderWordleBoard() {
       const board = document.getElementById('wordle-board');
       board.innerHTML = '';
-      const target = filteredWordles[wordleIndex].word;
+      const target = wordleList[wordleIdx].word;
 
       for (let r = 0; r < 6; r++) {
         const row = document.createElement('div');
-        row.id = `wordle-row-${r}`;
-        row.className = 'grid grid-cols-5 gap-1.5 sm:gap-2';
+        row.id = `w-row-${r}`;
+        row.className = 'wordle-row';
 
-        const isSubmitted = r < wordleGuesses.length;
-        const isCurrent = r === wordleGuesses.length && wordleStatus === 'playing';
-        const str = isSubmitted ? wordleGuesses[r] : (isCurrent ? currentGuess : '');
-        const evals = isSubmitted ? evaluateWordle(str, target) : [];
+        const isSub = r < wordleGuesses.length;
+        const isCur = r === wordleGuesses.length && wordleState === 'playing';
+        const str = isSub ? wordleGuesses[r] : (isCur ? curGuess : '');
+        const evals = isSub ? evalGuess(str, target) : [];
 
         for (let c = 0; c < 5; c++) {
           const tile = document.createElement('div');
-          const char = str[c] || '';
-          let cls = 'w-12 h-12 sm:w-14 sm:h-14 rounded-xl border-2 flex items-center justify-center text-lg sm:text-xl font-black uppercase transition-all ';
-
-          if (isSubmitted) {
-            cls += `tile-flip state-${evals[c]} `;
+          const ch = str[c] || '';
+          tile.className = 'wordle-tile';
+          if (ch) tile.classList.add('has-char');
+          if (isSub) {
+            tile.classList.add(`state-${evals[c]}`);
+            tile.classList.add('tile-flip');
             tile.style.animationDelay = `${c * 70}ms`;
-          } else if (char) {
-            cls += 'border-[var(--foreground)] bg-[var(--background)] text-[var(--foreground)] tile-pop ';
-          } else {
-            cls += 'border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] ';
+          } else if (ch) {
+            tile.classList.add('tile-pop');
           }
-
-          tile.className = cls;
-          tile.textContent = char;
+          tile.textContent = ch;
           row.appendChild(tile);
         }
         board.appendChild(row);
       }
     }
 
-    function evaluateWordle(guess, target) {
+    function evalGuess(guess, target) {
       const res = Array(5).fill('absent');
-      const tArr = target.split('');
-      const gArr = guess.split('');
-
+      const t = target.split('');
+      const g = guess.split('');
       for (let i = 0; i < 5; i++) {
-        if (gArr[i] === tArr[i]) {
-          res[i] = 'correct';
-          tArr[i] = null;
-          gArr[i] = null;
-        }
+        if (g[i] === t[i]) { res[i] = 'correct'; t[i] = null; g[i] = null; }
       }
       for (let i = 0; i < 5; i++) {
-        if (gArr[i] !== null) {
-          const idx = tArr.indexOf(gArr[i]);
-          if (idx !== -1) {
-            res[i] = 'present';
-            tArr[idx] = null;
-          }
+        if (g[i] !== null) {
+          const idx = t.indexOf(g[i]);
+          if (idx !== -1) { res[i] = 'present'; t[idx] = null; }
         }
       }
       return res;
@@ -1084,16 +1332,14 @@
     function renderWordleKeyboard() {
       const kb = document.getElementById('wordle-keyboard');
       kb.innerHTML = '';
-      const target = filteredWordles[wordleIndex].word;
+      const target = wordleList[wordleIdx].word;
 
       const keyState = {};
-      const priority = { absent: 1, present: 2, correct: 3 };
       wordleGuesses.forEach(g => {
-        const evals = evaluateWordle(g, target);
+        const ev = evalGuess(g, target);
         for (let i = 0; i < 5; i++) {
-          const ch = g[i];
-          const st = evals[i];
-          if (!keyState[ch] || priority[st] > priority[keyState[ch]]) {
+          const ch = g[i], st = ev[i];
+          if (!keyState[ch] || (st === 'correct') || (st === 'present' && keyState[ch] !== 'correct')) {
             keyState[ch] = st;
           }
         }
@@ -1107,18 +1353,11 @@
 
       rows.forEach(r => {
         const rowEl = document.createElement('div');
-        rowEl.className = 'flex justify-center gap-1 sm:gap-1.5';
+        rowEl.className = 'kb-row';
         r.forEach(k => {
           const btn = document.createElement('button');
-          const isWide = k === 'ENTER' || k === '⌫';
-          let cls = `${isWide ? 'px-2.5 sm:px-3.5 text-xs' : 'flex-1 max-w-[38px] text-xs sm:text-sm'} h-11 rounded-lg font-bold border transition active:scale-95 `;
-          const st = keyState[k];
-          if (st) {
-            cls += `state-${st}`;
-          } else {
-            cls += 'border-[var(--border)] bg-[var(--secondary)] text-[var(--secondary-foreground)] hover:opacity-90';
-          }
-          btn.className = cls;
+          btn.className = 'kb-key' + (k.length > 1 ? ' wide' : '');
+          if (keyState[k]) btn.classList.add(`state-${keyState[k]}`);
           btn.textContent = k;
           btn.onclick = () => handleWordleKey(k);
           rowEl.appendChild(btn);
@@ -1128,329 +1367,220 @@
     }
 
     function handleWordleKey(k) {
-      if (wordleStatus !== 'playing') return;
+      if (wordleState !== 'playing') return;
 
       if (k === '⌫' || k === 'BACKSPACE') {
-        if (currentGuess.length > 0) {
-          currentGuess = currentGuess.slice(0, -1);
+        if (curGuess.length > 0) {
+          curGuess = curGuess.slice(0, -1);
           renderWordleBoard();
         }
         return;
       }
-
       if (k === 'ENTER') {
-        if (currentGuess.length < 5) {
-          const rowEl = document.getElementById(`wordle-row-${wordleGuesses.length}`);
-          if (rowEl) {
-            rowEl.classList.remove('row-shake');
-            void rowEl.offsetWidth;
-            rowEl.classList.add('row-shake');
-          }
-          showToast('Padam 5 letters irukkanum! (5 letters required)');
+        if (curGuess.length < 5) {
+          const r = document.getElementById(`w-row-${wordleGuesses.length}`);
+          if (r) { r.classList.remove('row-shake'); void r.offsetWidth; r.classList.add('row-shake'); }
+          showToast('5 letters required!');
           return;
         }
 
-        const p = filteredWordles[wordleIndex];
-        wordleGuesses.push(currentGuess);
-        const submitted = currentGuess;
-        currentGuess = '';
+        const p = wordleList[wordleIdx];
+        wordleGuesses.push(curGuess);
+        const sub = curGuess;
+        curGuess = '';
 
-        if (submitted === p.word) {
-          wordleStatus = 'won';
-          solvedWordleIds.add(p.id);
-          stats.played++;
-          stats.won++;
-          stats.streak++;
-          updateStats();
+        if (sub === p.word) {
+          wordleState = 'won';
+          stats.played++; stats.won++; stats.streak++;
+          updateStatsUI();
           showToast(`🔥 MASS! "${p.word}" Unlocked!`);
           showWordleLore(true);
         } else if (wordleGuesses.length >= 6) {
-          wordleStatus = 'lost';
-          stats.played++;
-          stats.streak = 0;
-          updateStats();
-          showToast(`The word was ${p.word}! Try next one!`);
+          wordleState = 'lost';
+          stats.played++; stats.streak = 0;
+          updateStatsUI();
+          showToast(`The word was ${p.word}!`);
           showWordleLore(false);
         }
 
         renderWordleBoard();
         renderWordleKeyboard();
-        renderWordleArchive();
         return;
       }
-
-      if (/^[A-Z]$/.test(k) && currentGuess.length < 5) {
-        currentGuess += k;
+      if (/^[A-Z]$/.test(k) && curGuess.length < 5) {
+        curGuess += k;
         renderWordleBoard();
       }
     }
 
-    function toggleWordleHint() {
-      document.getElementById('wordle-hint-box').classList.toggle('hidden');
+    function toggleHintDrawer() {
+      document.getElementById('hint-drawer').classList.toggle('active');
     }
 
-    function revealWordleAnswer() {
-      if (wordleStatus !== 'playing') return;
-      const p = filteredWordles[wordleIndex];
+    function revealWordle() {
+      if (wordleState !== 'playing') return;
+      const p = wordleList[wordleIdx];
       wordleGuesses.push(p.word);
-      currentGuess = '';
-      wordleStatus = 'won';
-      solvedWordleIds.add(p.id);
+      curGuess = '';
+      wordleState = 'won';
       renderWordleBoard();
       renderWordleKeyboard();
-      renderWordleArchive();
       showWordleLore(true, true);
     }
 
-    function showWordleLore(won, revealed = false) {
-      const p = filteredWordles[wordleIndex];
-      const card = document.getElementById('wordle-lore-card');
-      const badge = document.getElementById('lore-status-badge');
-      badge.textContent = revealed ? 'REVEALED' : (won ? `HIT IN ${wordleGuesses.length}/6` : 'CINEMA LORE');
-      badge.className = `text-xs font-bold uppercase px-2 py-0.5 rounded text-white ${won && !revealed ? 'bg-emerald-600' : 'bg-amber-600'}`;
-      document.getElementById('lore-word-title').textContent = `🎬 ${p.word}`;
-      document.getElementById('lore-definition').textContent = p.lore;
-      document.getElementById('lore-dialogue').textContent = p.dialogue;
-      card.classList.remove('hidden');
+    function showWordleLore(won, rev = false) {
+      const p = wordleList[wordleIdx];
+      const c = document.getElementById('lore-card');
+      document.getElementById('lore-tag').textContent = rev ? 'REVEALED' : (won ? `HIT IN ${wordleGuesses.length}/6` : 'CINEMA LORE');
+      document.getElementById('lore-word').textContent = `🎬 ${p.word}`;
+      document.getElementById('lore-desc').textContent = p.desc;
+      document.getElementById('lore-quote').textContent = p.quote;
+      c.classList.add('active');
     }
 
-    function renderWordleArchive() {
-      const container = document.getElementById('wordle-archive-pills');
-      container.innerHTML = '';
-      document.getElementById('wordle-solved-count').textContent = `${solvedWordleIds.size} / ${TAMIL_WORDLES.length} Unlocked`;
-
-      filteredWordles.forEach((p, idx) => {
-        const isSolved = solvedWordleIds.has(p.id);
-        const isCurrent = idx === wordleIndex;
-        const btn = document.createElement('button');
-        btn.onclick = () => { wordleIndex = idx; loadWordle(idx); };
-        btn.className = `p-2 rounded-lg border text-left transition flex flex-col justify-between ${
-          isCurrent
-            ? 'border-amber-500 bg-amber-500/10'
-            : 'border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)]'
-        }`;
-        btn.innerHTML = `
-          <div class="flex items-center justify-between text-xs font-black">
-            <span>#${idx + 1}</span>
-            <span>${isSolved ? '🟩' : '⬜'}</span>
-          </div>
-          <div class="text-xs font-semibold truncate mt-1 text-[var(--muted-foreground)]">
-            ${isSolved ? p.word : p.clue.split(' ')[0]}
-          </div>
-        `;
-        container.appendChild(btn);
-      });
+    function shareWordle() {
+      const p = wordleList[wordleIdx];
+      let rows = wordleGuesses.map(g => evalGuess(g, p.word).map(st => st === 'correct' ? '🟩' : (st === 'present' ? '🟨' : '⬛')).join('')).join('\n');
+      navigator.clipboard?.writeText(`KOLLY-DLE 🎬 ${p.word}\n${rows}`);
+      showToast('Copied score to clipboard! 📋');
     }
 
-    function shareWordleResult() {
-      const p = filteredWordles[wordleIndex];
-      let rows = wordleGuesses.map(g => {
-        return evaluateWordle(g, p.word).map(st =>
-          st === 'correct' ? '🟩' : (st === 'present' ? '🟨' : '⬛')
-        ).join('');
-      }).join('\n');
-      if (!rows) rows = '🟩🟨⬛🟩🟩';
-      const text = `KOLLY-DLE 🎬 ${p.word}\n${rows}\nStreak: 🔥 ${stats.streak}`;
-      navigator.clipboard?.writeText(text);
-      showToast('Copied Kollywood score to clipboard! 📋');
-    }
-
-    /* =========================================================================
-       GAME 2: KOLLYWOOD CONNECTIONS
-       ========================================================================= */
+    /* CONNECTIONS */
     function loadQuads(idx) {
       const b = TAMIL_QUADS[idx];
       quadsSelected.clear();
-      quadsSolvedTiers = [];
-      quadsMistakes = 4;
+      quadsSolved = [];
+      quadsLives = 4;
 
-      document.getElementById('quads-theme-badge').textContent = `🎬 Kollywood Board #${idx + 1}`;
-      document.getElementById('quads-board-title').textContent = b.title;
-
-      updateStageMeta(
-        'KOLLYWOOD CONNECTIONS',
-        b.title,
-        'Group 16 Tamil cinema items into 4 thematic sets of 4.',
-        idx + 1,
-        TAMIL_QUADS.length
-      );
-
+      updateStageHeader('🟨', 'CONNECTIONS', b.title, idx + 1, TAMIL_QUADS.length);
       quadsItems = [];
       b.categories.forEach(cat => {
-        cat.items.forEach(item => {
-          quadsItems.push({ text: item, tier: cat.tier, catName: cat.name, catDesc: cat.desc });
-        });
+        cat.items.forEach(it => quadsItems.push({ text: it, tier: cat.tier, name: cat.name, desc: cat.desc }));
       });
-      shuffle(quadsItems);
-      renderQuadsStage();
-    }
-
-    function shuffle(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
+      for (let i = quadsItems.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
+        [quadsItems[i], quadsItems[j]] = [quadsItems[j], quadsItems[i]];
       }
+      renderQuads();
     }
 
-    function renderQuadsStage() {
-      // Mistakes
-      const dots = document.getElementById('quads-mistakes-dots');
-      dots.innerHTML = '';
-      for (let i = 0; i < 4; i++) {
-        const d = document.createElement('span');
-        d.className = `w-2.5 h-2.5 rounded-full ${i < quadsMistakes ? 'bg-amber-500' : 'bg-[var(--border)]'}`;
-        dots.appendChild(d);
-      }
+    function renderQuads() {
+      const lives = document.getElementById('quads-lives');
+      lives.textContent = '● '.repeat(quadsLives) + '○ '.repeat(4 - quadsLives);
 
-      // Solved
       const solvedEl = document.getElementById('quads-solved-list');
       solvedEl.innerHTML = '';
-      quadsSolvedTiers.forEach(cat => {
-        const div = document.createElement('div');
-        div.className = `p-3 rounded-xl border tier-${cat.tier} text-center`;
-        div.innerHTML = `
-          <div class="text-xs sm:text-sm font-black uppercase text-[var(--foreground)]">${cat.name}</div>
-          <div class="text-xs font-bold text-[var(--foreground)] mt-0.5">${cat.items.join(' • ')}</div>
-          <div class="text-xs text-[var(--muted-foreground)] mt-0.5">${cat.desc}</div>
-        `;
-        solvedEl.appendChild(div);
+      quadsSolved.forEach(c => {
+        const b = document.createElement('div');
+        b.className = `quad-solved-banner tier-${c.tier}`;
+        b.innerHTML = `<div class="quad-cat-name">${c.name}</div><div class="quad-cat-items">${c.items.join(' • ')}</div>`;
+        solvedEl.appendChild(b);
       });
 
-      // Active
       const grid = document.getElementById('quads-grid');
       grid.innerHTML = '';
-      const solvedTiersSet = new Set(quadsSolvedTiers.map(c => c.tier));
-      const remaining = quadsItems.filter(it => !solvedTiersSet.has(it.tier));
+      const solvedTiers = new Set(quadsSolved.map(c => c.tier));
+      const remaining = quadsItems.filter(it => !solvedTiers.has(it.tier));
 
       remaining.forEach(item => {
         const isSel = quadsSelected.has(item.text);
-        const btn = document.createElement('button');
-        btn.onclick = () => toggleQuad(item.text);
-        btn.className = `min-h-[64px] p-2.5 rounded-xl border text-xs sm:text-sm font-extrabold uppercase tracking-tight transition flex items-center justify-center text-center leading-snug ${
-          isSel
-            ? 'bg-amber-500 text-black border-amber-500 scale-[0.98] shadow-md'
-            : 'bg-[var(--background)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--secondary)]'
-        }`;
+        const btn = document.createElement('div');
+        btn.className = 'quad-item' + (isSel ? ' selected' : '');
         btn.textContent = item.text;
+        btn.onclick = () => {
+          if (quadsSelected.has(item.text)) quadsSelected.delete(item.text);
+          else {
+            if (quadsSelected.size >= 4) return;
+            quadsSelected.add(item.text);
+          }
+          renderQuads();
+        };
         grid.appendChild(btn);
       });
 
       document.getElementById('btn-quads-submit').disabled = quadsSelected.size !== 4;
     }
 
-    function toggleQuad(text) {
-      if (quadsSelected.has(text)) {
-        quadsSelected.delete(text);
-      } else {
-        if (quadsSelected.size >= 4) {
-          showToast('4 items maximum per group!');
-          return;
-        }
-        quadsSelected.add(text);
-      }
-      renderQuadsStage();
-    }
-
     function shuffleQuads() {
-      shuffle(quadsItems);
-      renderQuadsStage();
+      for (let i = quadsItems.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [quadsItems[i], quadsItems[j]] = [quadsItems[j], quadsItems[i]];
+      }
+      renderQuads();
     }
+    function deselectQuads() { quadsSelected.clear(); renderQuads(); }
 
-    function deselectAllQuads() {
-      quadsSelected.clear();
-      renderQuadsStage();
-    }
-
-    function submitQuadsGuess() {
+    function submitQuads() {
       if (quadsSelected.size !== 4) return;
-      const b = TAMIL_QUADS[quadsIndex];
+      const b = TAMIL_QUADS[quadsIdx];
       const selArr = Array.from(quadsSelected);
 
       for (const cat of b.categories) {
         const matched = selArr.filter(x => cat.items.includes(x)).length;
         if (matched === 4) {
-          quadsSolvedTiers.push(cat);
+          quadsSolved.push(cat);
           quadsSelected.clear();
-          showToast(`✨ Category Solved: ${cat.name}`);
-          if (quadsSolvedTiers.length === 4) {
-            stats.quadsWon++;
-            stats.streak++;
-            updateStats();
-            showToast('🏆 BLOCKBUSTER! Complete Kollywood Board Cleared!');
+          showToast(`✨ Solved: ${cat.name}`);
+          if (quadsSolved.length === 4) {
+            stats.quadsWon++; stats.streak++; updateStatsUI();
+            showToast('🏆 Full Board Cleared!');
           }
-          renderQuadsStage();
+          renderQuads();
           return;
         } else if (matched === 3) {
-          quadsMistakes = Math.max(0, quadsMistakes - 1);
-          showToast('🔥 One away! Just 1 movie off!');
-          if (quadsMistakes === 0) revealAllQuads();
-          else renderQuadsStage();
+          quadsLives = Math.max(0, quadsLives - 1);
+          showToast('🔥 One away! 3 correct!');
+          renderQuads();
           return;
         }
       }
-
-      quadsMistakes = Math.max(0, quadsMistakes - 1);
-      showToast('Illai! Not a thematic Kollywood match.');
-      if (quadsMistakes === 0) revealAllQuads();
-      else renderQuadsStage();
+      quadsLives = Math.max(0, quadsLives - 1);
+      showToast('Not a match!');
+      renderQuads();
     }
 
-    function giveQuadsHint() {
-      const b = TAMIL_QUADS[quadsIndex];
-      const solvedTiersSet = new Set(quadsSolvedTiers.map(c => c.tier));
-      const unsolved = b.categories.find(c => !solvedTiersSet.has(c.tier));
-      if (!unsolved) return;
+    function hintQuads() {
+      const b = TAMIL_QUADS[quadsIdx];
+      const solvedTiers = new Set(quadsSolved.map(c => c.tier));
+      const un = b.categories.find(c => !solvedTiers.has(c.tier));
+      if (!un) return;
       quadsSelected.clear();
-      quadsSelected.add(unsolved.items[0]);
-      quadsSelected.add(unsolved.items[1]);
-      showToast('💡 Hint: Paired 2 items from the same Kollywood set!');
-      renderQuadsStage();
+      quadsSelected.add(un.items[0]); quadsSelected.add(un.items[1]);
+      showToast('💡 Paired 2 matching movies!');
+      renderQuads();
     }
 
-    function revealAllQuads() {
-      const b = TAMIL_QUADS[quadsIndex];
-      quadsSolvedTiers = [...b.categories];
+    function revealQuads() {
+      quadsSolved = [...TAMIL_QUADS[quadsIdx].categories];
       quadsSelected.clear();
-      renderQuadsStage();
+      renderQuads();
     }
 
-    /* =========================================================================
-       GAME 3: 5x5 TANGLISH MINI
-       ========================================================================= */
+    /* 5x5 MINI */
     function loadMini(idx) {
       const m = TAMIL_MINIS[idx];
-      miniUserGrid = Array.from({ length: 5 }, () => Array(5).fill(''));
-      miniActiveRow = 0;
-      miniActiveCol = 0;
-      miniDir = 'across';
-      miniSeconds = 0;
+      miniGrid = Array.from({ length: 5 }, () => Array(5).fill(''));
+      miniR = 0; miniC = 0; miniDir = 'across';
+      miniSec = 0;
 
-      if (miniTimerId) clearInterval(miniTimerId);
-      miniTimerId = setInterval(() => {
+      if (miniTimer) clearInterval(miniTimer);
+      miniTimer = setInterval(() => {
         if (currentGame === 'mini') {
-          miniSeconds++;
-          const mins = String(Math.floor(miniSeconds / 60)).padStart(2, '0');
-          const secs = String(miniSeconds % 60).padStart(2, '0');
+          miniSec++;
+          const mins = String(Math.floor(miniSec / 60)).padStart(2, '0');
+          const secs = String(miniSec % 60).padStart(2, '0');
           document.getElementById('mini-timer').textContent = `${mins}:${secs}`;
         }
       }, 1000);
 
-      document.getElementById('mini-title-badge').textContent = m.title;
-
-      updateStageMeta(
-        '5x5 TANGLISH MINI',
-        m.title,
-        'Speed crossword with Tamil cinema & Chennai culture clues.',
-        idx + 1,
-        TAMIL_MINIS.length
-      );
-
-      renderMiniAll();
+      document.getElementById('mini-puzzle-title').textContent = m.title;
+      updateStageHeader('🏁', '5x5 MINI', m.title, idx + 1, TAMIL_MINIS.length);
+      renderMini();
       renderMiniKeyboard();
     }
 
-    function renderMiniAll() {
-      const m = TAMIL_MINIS[miniIndex];
+    function renderMini() {
+      const m = TAMIL_MINIS[miniIdx];
       const gridEl = document.getElementById('mini-grid');
       gridEl.innerHTML = '';
 
@@ -1461,79 +1591,63 @@
       for (let r = 0; r < 5; r++) {
         for (let c = 0; c < 5; c++) {
           const cell = document.createElement('div');
-          const isFocused = r === miniActiveRow && c === miniActiveCol;
-          const isLine = (miniDir === 'across' && r === miniActiveRow) || (miniDir === 'down' && c === miniActiveCol);
+          const isFoc = r === miniR && c === miniC;
+          const isLine = (miniDir === 'across' && r === miniR) || (miniDir === 'down' && c === miniC);
 
-          let bgCls = 'bg-[var(--card)] text-[var(--foreground)]';
-          if (isFocused) {
-            bgCls = 'bg-amber-500 text-black';
-          } else if (isLine) {
-            bgCls = 'bg-[var(--secondary)] text-[var(--foreground)]';
-          }
-
-          cell.className = `relative rounded-lg flex items-center justify-center text-lg sm:text-xl font-black uppercase cursor-pointer select-none transition ${bgCls}`;
+          cell.className = 'mini-cell' + (isFoc ? ' focused' : (isLine ? ' inline-word' : ''));
           cell.onclick = () => {
-            if (miniActiveRow === r && miniActiveCol === c) {
-              miniDir = miniDir === 'across' ? 'down' : 'across';
-            } else {
-              miniActiveRow = r;
-              miniActiveCol = c;
-            }
-            renderMiniAll();
+            if (miniR === r && miniC === c) miniDir = miniDir === 'across' ? 'down' : 'across';
+            else { miniR = r; miniC = c; }
+            renderMini();
           };
 
           const num = numMap[`${r},${c}`];
           if (num) {
-            const numSpan = document.createElement('span');
-            numSpan.className = 'absolute top-0.5 left-1 text-xs font-bold leading-none opacity-75';
-            numSpan.textContent = num;
-            cell.appendChild(numSpan);
+            const n = document.createElement('span');
+            n.className = 'mini-num';
+            n.textContent = num;
+            cell.appendChild(n);
           }
 
-          const valSpan = document.createElement('span');
-          valSpan.className = 'mt-1';
-          valSpan.textContent = miniUserGrid[r][c];
-          cell.appendChild(valSpan);
-
+          const txt = document.createElement('span');
+          txt.textContent = miniGrid[r][c];
+          cell.appendChild(txt);
           gridEl.appendChild(cell);
         }
       }
 
       // Active Clue
-      const activeObj = miniDir === 'across' ? m.across[miniActiveRow] : m.down[miniActiveCol];
-      if (activeObj) {
-        document.getElementById('mini-active-clue-label').textContent = `${activeObj.num} ${miniDir.toUpperCase()}`;
-        document.getElementById('mini-active-clue-text').textContent = activeObj.clue;
+      const curClue = miniDir === 'across' ? m.across[miniR] : m.down[miniC];
+      if (curClue) {
+        document.getElementById('mini-active-label').textContent = `${curClue.num} ${miniDir.toUpperCase()}`;
+        document.getElementById('mini-active-text').textContent = curClue.clue;
       }
 
-      // Across list
+      // Clue Lists
       const acrossEl = document.getElementById('mini-clues-across');
       acrossEl.innerHTML = '';
-      m.across.forEach((cl, idx) => {
+      m.across.forEach((cl, i) => {
         const li = document.createElement('li');
-        const active = miniDir === 'across' && miniActiveRow === idx;
-        li.className = `p-2 rounded-lg cursor-pointer transition ${active ? 'bg-[var(--secondary)] font-bold text-[var(--foreground)] border border-[var(--border)]' : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'}`;
-        li.innerHTML = `<span class="font-bold text-amber-500 mr-1.5">${cl.num}.</span>${cl.clue}`;
-        li.onclick = () => { miniDir = 'across'; miniActiveRow = idx; miniActiveCol = 0; renderMiniAll(); };
+        li.className = 'mini-clue-item' + (miniDir === 'across' && miniR === i ? ' active' : '');
+        li.innerHTML = `<b>${cl.num}.</b> ${cl.clue}`;
+        li.onclick = () => { miniDir = 'across'; miniR = i; miniC = 0; renderMini(); };
         acrossEl.appendChild(li);
       });
 
-      // Down list
       const downEl = document.getElementById('mini-clues-down');
       downEl.innerHTML = '';
-      m.down.forEach((cl, idx) => {
+      m.down.forEach((cl, i) => {
         const li = document.createElement('li');
-        const active = miniDir === 'down' && miniActiveCol === idx;
-        li.className = `p-2 rounded-lg cursor-pointer transition ${active ? 'bg-[var(--secondary)] font-bold text-[var(--foreground)] border border-[var(--border)]' : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'}`;
-        li.innerHTML = `<span class="font-bold text-amber-500 mr-1.5">${cl.num}.</span>${cl.clue}`;
-        li.onclick = () => { miniDir = 'down'; miniActiveCol = idx; miniActiveRow = 0; renderMiniAll(); };
+        li.className = 'mini-clue-item' + (miniDir === 'down' && miniC === i ? ' active' : '');
+        li.innerHTML = `<b>${cl.num}.</b> ${cl.clue}`;
+        li.onclick = () => { miniDir = 'down'; miniC = i; miniR = 0; renderMini(); };
         downEl.appendChild(li);
       });
     }
 
-    function toggleMiniDirection() {
+    function toggleMiniDir() {
       miniDir = miniDir === 'across' ? 'down' : 'across';
-      renderMiniAll();
+      renderMini();
     }
 
     function renderMiniKeyboard() {
@@ -1546,10 +1660,10 @@
       ];
       rows.forEach(r => {
         const rowEl = document.createElement('div');
-        rowEl.className = 'flex justify-center gap-1';
+        rowEl.className = 'kb-row';
         r.forEach(k => {
           const btn = document.createElement('button');
-          btn.className = 'flex-1 h-9 rounded-lg border border-[var(--border)] bg-[var(--secondary)] text-[var(--secondary-foreground)] text-xs font-bold hover:opacity-90';
+          btn.className = 'kb-key' + (k.length > 1 ? ' wide' : '');
           btn.textContent = k;
           btn.onclick = () => handleMiniKey(k);
           rowEl.appendChild(btn);
@@ -1559,243 +1673,163 @@
     }
 
     function handleMiniKey(k) {
-      if (k === '⇄') { toggleMiniDirection(); return; }
+      if (k === '⇄') { toggleMiniDir(); return; }
       if (k === '⌫' || k === 'BACKSPACE') {
-        if (miniUserGrid[miniActiveRow][miniActiveCol] !== '') {
-          miniUserGrid[miniActiveRow][miniActiveCol] = '';
-        } else {
-          stepMini(-1);
-          miniUserGrid[miniActiveRow][miniActiveCol] = '';
-        }
-        renderMiniAll();
+        if (miniGrid[miniR][miniC]) miniGrid[miniR][miniC] = '';
+        else { stepMini(-1); miniGrid[miniR][miniC] = ''; }
+        renderMini();
         return;
       }
       if (/^[A-Z]$/.test(k)) {
-        miniUserGrid[miniActiveRow][miniActiveCol] = k;
+        miniGrid[miniR][miniC] = k;
         checkMiniComplete();
         stepMini(1);
-        renderMiniAll();
+        renderMini();
       }
     }
 
-    function stepMini(delta) {
+    function stepMini(d) {
       if (miniDir === 'across') {
-        let nc = miniActiveCol + delta;
-        let nr = miniActiveRow;
-        if (nc > 4) { nc = 0; nr = (nr + 1) % 5; }
-        if (nc < 0) { nc = 4; nr = (nr + 4) % 5; }
-        miniActiveRow = nr; miniActiveCol = nc;
+        miniC += d;
+        if (miniC > 4) { miniC = 0; miniR = (miniR + 1) % 5; }
+        if (miniC < 0) { miniC = 4; miniR = (miniR + 4) % 5; }
       } else {
-        let nr = miniActiveRow + delta;
-        let nc = miniActiveCol;
-        if (nr > 4) { nr = 0; nc = (nc + 1) % 5; }
-        if (nr < 0) { nr = 4; nc = (nc + 4) % 5; }
-        miniActiveRow = nr; miniActiveCol = nc;
+        miniR += d;
+        if (miniR > 4) { miniR = 0; miniC = (miniC + 1) % 5; }
+        if (miniR < 0) { miniR = 4; miniC = (miniC + 4) % 5; }
       }
     }
 
     function checkMiniComplete() {
-      const m = TAMIL_MINIS[miniIndex];
+      const m = TAMIL_MINIS[miniIdx];
       for (let r = 0; r < 5; r++) {
         for (let c = 0; c < 5; c++) {
-          if (miniUserGrid[r][c] !== m.grid[r][c]) return false;
+          if (miniGrid[r][c] !== m.grid[r][c]) return;
         }
       }
-      showToast('🏁 Tanglish 5x5 Mini Completed! Super Hit!');
-      stats.played++;
-      stats.won++;
-      stats.streak++;
-      updateStats();
-      return true;
+      showToast('🏁 Mini Crossword Solved! Super!');
+      stats.played++; stats.won++; stats.streak++;
+      updateStatsUI();
     }
 
-    function checkMiniGrid() {
-      const m = TAMIL_MINIS[miniIndex];
+    function checkMini() {
+      const m = TAMIL_MINIS[miniIdx];
       let cleared = 0;
       for (let r = 0; r < 5; r++) {
         for (let c = 0; c < 5; c++) {
-          if (miniUserGrid[r][c] && miniUserGrid[r][c] !== m.grid[r][c]) {
-            miniUserGrid[r][c] = '';
+          if (miniGrid[r][c] && miniGrid[r][c] !== m.grid[r][c]) {
+            miniGrid[r][c] = '';
             cleared++;
           }
         }
       }
-      renderMiniAll();
-      showToast(cleared === 0 ? '✓ All filled letters are correct!' : `Cleared ${cleared} incorrect letters.`);
+      renderMini();
+      showToast(cleared === 0 ? '✓ All filled letters are correct!' : `Cleared ${cleared} mistakes.`);
     }
 
-    function revealMiniCell() {
-      const m = TAMIL_MINIS[miniIndex];
-      miniUserGrid[miniActiveRow][miniActiveCol] = m.grid[miniActiveRow][miniActiveCol];
-      checkMiniComplete();
-      stepMini(1);
-      renderMiniAll();
-    }
-
-    function revealMiniGrid() {
-      const m = TAMIL_MINIS[miniIndex];
+    function solveMini() {
+      const m = TAMIL_MINIS[miniIdx];
       for (let r = 0; r < 5; r++) {
-        for (let c = 0; c < 5; c++) {
-          miniUserGrid[r][c] = m.grid[r][c];
-        }
+        for (let c = 0; c < 5; c++) miniGrid[r][c] = m.grid[r][c];
       }
-      renderMiniAll();
-      showToast('5x5 Kollywood Mini Solved!');
+      renderMini();
+      showToast('5x5 Mini Solved!');
     }
 
-    /* =========================================================================
-       GAME 4: PUNCH DIALOGUE MATCH
-       ========================================================================= */
-    function initDialogueRound() {
-      dmIndex = 0;
-      dmScore = 0;
-      dmSolvedIndices.clear();
-      dmShuffledActors = TAMIL_DIALOGUES.map((d, i) => ({ text: d.actor, idx: i }));
-      dmShuffledMovies = TAMIL_DIALOGUES.map((d, i) => ({ text: d.movie, idx: i }));
-      shuffle(dmShuffledActors);
-      shuffle(dmShuffledMovies);
-      renderDialogueStage();
+    /* DIALOGUE MATCH */
+    let shuffledActors = [], shuffledMovies = [];
+    function initDialogue() {
+      dmIdx = 0; dmScore = 0; dmSolved.clear();
+      shuffledActors = TAMIL_DIALOGUES.map((d, i) => ({ text: d.actor, idx: i }));
+      shuffledMovies = TAMIL_DIALOGUES.map((d, i) => ({ text: d.movie, idx: i }));
+      for (let i = shuffledActors.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledActors[i], shuffledActors[j]] = [shuffledActors[j], shuffledActors[i]];
+        [shuffledMovies[i], shuffledMovies[j]] = [shuffledMovies[j], shuffledMovies[i]];
+      }
+      loadDialogue();
     }
 
-    function resetDialogueRound() {
-      initDialogueRound();
-      showToast('Dialogue round reshuffled!');
-    }
+    function loadDialogue() {
+      const cur = TAMIL_DIALOGUES[dmIdx];
+      document.getElementById('dm-quote').textContent = cur.quote;
+      document.getElementById('dm-meaning').textContent = cur.meaning;
+      updateStageHeader('🗣️', 'PUNCH MATCH', 'Match Dialogue, Star & Film', dmIdx + 1, TAMIL_DIALOGUES.length);
 
-    function renderDialogueStage() {
-      const item = TAMIL_DIALOGUES[dmIndex];
-      document.getElementById('dm-stage-badge').textContent = `SCENE #${dmIndex + 1} OF ${TAMIL_DIALOGUES.length}`;
-      document.getElementById('dm-quote-text').textContent = item.quote;
-      document.getElementById('dm-quote-meaning').textContent = item.meaning;
-      document.getElementById('dm-score-pill').textContent = `Score: ${dmScore} / ${TAMIL_DIALOGUES.length}`;
-
-      document.getElementById('dm-sel-actor').textContent = dmSelected.actor ? dmSelected.actor.text : '—';
-      document.getElementById('dm-sel-movie').textContent = dmSelected.movie ? dmSelected.movie.text : '—';
-
-      // Render Actors Column
-      const actCol = document.getElementById('dm-col-actors');
-      actCol.innerHTML = '';
-      dmShuffledActors.forEach(a => {
-        const isSolved = dmSolvedIndices.has(a.idx);
-        const isSel = dmSelected.actor?.idx === a.idx;
+      const aCol = document.getElementById('dm-actors-col');
+      aCol.innerHTML = '';
+      shuffledActors.forEach(a => {
         const btn = document.createElement('button');
-        btn.disabled = isSolved;
-        btn.onclick = () => { dmSelected.actor = a; renderDialogueStage(); };
-        btn.className = `p-2.5 rounded-xl border text-xs font-bold transition text-center ${
-          isSolved
-            ? 'opacity-35 bg-[var(--secondary)] border-[var(--border)] line-through'
-            : isSel
-              ? 'bg-amber-500 text-black border-amber-500 shadow-sm'
-              : 'bg-[var(--background)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--secondary)]'
-        }`;
+        btn.className = 'dialogue-btn' + (dmSelActor?.idx === a.idx ? ' selected' : '') + (dmSolved.has(a.idx) ? ' solved' : '');
         btn.textContent = a.text;
-        actCol.appendChild(btn);
+        btn.onclick = () => { dmSelActor = a; loadDialogue(); };
+        aCol.appendChild(btn);
       });
 
-      // Render Movies Column
-      const movCol = document.getElementById('dm-col-movies');
-      movCol.innerHTML = '';
-      dmShuffledMovies.forEach(m => {
-        const isSolved = dmSolvedIndices.has(m.idx);
-        const isSel = dmSelected.movie?.idx === m.idx;
+      const mCol = document.getElementById('dm-movies-col');
+      mCol.innerHTML = '';
+      shuffledMovies.forEach(m => {
         const btn = document.createElement('button');
-        btn.disabled = isSolved;
-        btn.onclick = () => { dmSelected.movie = m; renderDialogueStage(); };
-        btn.className = `p-2.5 rounded-xl border text-xs font-bold transition text-center ${
-          isSolved
-            ? 'opacity-35 bg-[var(--secondary)] border-[var(--border)] line-through'
-            : isSel
-              ? 'bg-amber-500 text-black border-amber-500 shadow-sm'
-              : 'bg-[var(--background)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--secondary)]'
-        }`;
+        btn.className = 'dialogue-btn' + (dmSelMovie?.idx === m.idx ? ' selected' : '') + (dmSolved.has(m.idx) ? ' solved' : '');
         btn.textContent = m.text;
-        movCol.appendChild(btn);
+        btn.onclick = () => { dmSelMovie = m; loadDialogue(); };
+        mCol.appendChild(btn);
       });
     }
 
-    function submitDialogueMatch() {
-      if (!dmSelected.actor || !dmSelected.movie) {
-        showToast('Select both the Actor and the Movie first!');
+    function submitDialogue() {
+      if (!dmSelActor || !dmSelMovie) {
+        showToast('Select both the Actor and Movie!');
         return;
       }
-      if (dmSelected.actor.idx === dmIndex && dmSelected.movie.idx === dmIndex) {
-        dmSolvedIndices.add(dmIndex);
-        dmScore++;
-        stats.streak++;
-        updateStats();
-        dmSelected = { actor: null, movie: null };
-        showToast('⚡ THARUMARU THAKKALI SORU! Exact dialogue match!');
-        if (dmSolvedIndices.size < TAMIL_DIALOGUES.length) {
+      if (dmSelActor.idx === dmIdx && dmSelMovie.idx === dmIdx) {
+        dmSolved.add(dmIdx);
+        dmScore++; stats.streak++; updateStatsUI();
+        dmSelActor = null; dmSelMovie = null;
+        showToast('⚡ MASS! Correct Cinema Match!');
+        if (dmSolved.size < TAMIL_DIALOGUES.length) {
           for (let i = 0; i < TAMIL_DIALOGUES.length; i++) {
-            const nextIdx = (dmIndex + 1 + i) % TAMIL_DIALOGUES.length;
-            if (!dmSolvedIndices.has(nextIdx)) {
-              dmIndex = nextIdx;
-              break;
-            }
+            const nxt = (dmIdx + 1 + i) % TAMIL_DIALOGUES.length;
+            if (!dmSolved.has(nxt)) { dmIdx = nxt; break; }
           }
         }
-        renderDialogueStage();
+        loadDialogue();
       } else {
-        showToast('Tappu! That star / movie does not match this scene!');
+        showToast('Tappu! Star and movie do not match this line!');
       }
     }
 
-    /* =========================================================================
-       KEYBOARD & MODALS
-       ========================================================================= */
-    function handleKeyInput(e) {
+    /* KEYBOARD & MODALS */
+    function handleKey(e) {
       if (e.ctrlKey || e.metaKey || e.altKey) return;
-      const key = e.key.toUpperCase();
-
+      const k = e.key.toUpperCase();
       if (currentGame === 'wordle') {
-        if (key === 'ENTER' || key === 'BACKSPACE' || /^[A-Z]$/.test(key)) {
-          e.preventDefault();
-          handleWordleKey(key);
+        if (k === 'ENTER' || k === 'BACKSPACE' || /^[A-Z]$/.test(k)) {
+          e.preventDefault(); handleWordleKey(k);
         }
       } else if (currentGame === 'mini') {
-        if (key === 'BACKSPACE' || /^[A-Z]$/.test(key)) {
-          e.preventDefault();
-          handleMiniKey(key);
-        } else if (key === 'ARROWLEFT') {
-          e.preventDefault(); miniDir = 'across'; stepMini(-1); renderMiniAll();
-        } else if (key === 'ARROWRIGHT') {
-          e.preventDefault(); miniDir = 'across'; stepMini(1); renderMiniAll();
-        } else if (key === 'ARROWUP') {
-          e.preventDefault(); miniDir = 'down'; stepMini(-1); renderMiniAll();
-        } else if (key === 'ARROWDOWN') {
-          e.preventDefault(); miniDir = 'down'; stepMini(1); renderMiniAll();
-        }
+        if (k === 'BACKSPACE' || /^[A-Z]$/.test(k)) {
+          e.preventDefault(); handleMiniKey(k);
+        } else if (k === 'ARROWLEFT') { miniDir = 'across'; stepMini(-1); renderMini(); }
+        else if (k === 'ARROWRIGHT') { miniDir = 'across'; stepMini(1); renderMini(); }
+        else if (k === 'ARROWUP') { miniDir = 'down'; stepMini(-1); renderMini(); }
+        else if (k === 'ARROWDOWN') { miniDir = 'down'; stepMini(1); renderMini(); }
       }
     }
 
-    function updateStats() {
-      document.getElementById('header-streak-badge').textContent = `🔥 ${stats.streak}`;
+    function updateStatsUI() {
+      document.getElementById('streak-counter').textContent = `🔥 ${stats.streak}`;
       document.getElementById('stat-played').textContent = stats.played;
-      const pct = stats.played > 0 ? Math.round((stats.won / stats.played) * 100) : 100;
-      document.getElementById('stat-winpct').textContent = `${pct}%`;
+      document.getElementById('stat-winpct').textContent = stats.played > 0 ? `${Math.round((stats.won/stats.played)*100)}%` : '100%';
       document.getElementById('stat-streak').textContent = stats.streak;
       document.getElementById('stat-quads').textContent = stats.quadsWon;
     }
 
-    function openStatsModal() {
-      updateStats();
-      const m = document.getElementById('modal-stats');
-      m.classList.remove('hidden');
-      m.classList.add('flex');
-    }
-
-    function openHelpModal() {
-      const m = document.getElementById('modal-help');
-      m.classList.remove('hidden');
-      m.classList.add('flex');
-    }
-
+    function openStatsModal() { updateStatsUI(); document.getElementById('modal-stats').classList.add('open'); }
+    function openHelpModal() { document.getElementById('modal-help').classList.add('open'); }
     function closeModals() {
-      ['modal-stats', 'modal-help'].forEach(id => {
-        const m = document.getElementById(id);
-        m.classList.add('hidden');
-        m.classList.remove('flex');
-      });
+      document.getElementById('modal-stats').classList.remove('open');
+      document.getElementById('modal-help').classList.remove('open');
     }
 
     init();
