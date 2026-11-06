@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KOLLY-DLE — Tamil Cinema & Tanglish Cultural Mini Arcade</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @keyframes flipIn {
+      0% { transform: rotateX(0deg); }
+      50% { transform: rotateX(-90deg); }
+      100% { transform: rotateX(0deg); }
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.85); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+    @keyframes shakeRow {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    @keyframes confettiDrop {
+      0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(120px) rotate(360deg); opacity: 0; }
+    }
+    .tile-pop { animation: popIn 0.14s ease-out forwards; }
+    .tile-flip { animation: flipIn 0.45s ease-in-out forwards; }
+    .row-shake { animation: shakeRow 0.38s ease-in-out; }
+
+    /* Custom Wordle States */
+    .state-correct {
+      background-color: #15803d !important;
+      border-color: #15803d !important;
+      color: #ffffff !important;
+    }
+    .state-present {
+      background-color: #b45309 !important;
+      border-color: #b45309 !important;
+      color: #ffffff !important;
+    }
+    .state-absent {
+      background-color: #4b5563 !important;
+      border-color: #4b5563 !important;
+      color: #ffffff !important;
+    }
+
+    /* Connections Tiers */
+    .tier-1 { background-color: rgba(234, 179, 8, 0.18); border-color: rgba(234, 179, 8, 0.55); }
+    .tier-2 { background-color: rgba(22, 163, 74, 0.18); border-color: rgba(22, 163, 74, 0.55); }
+    .tier-3 { background-color: rgba(37, 99, 235, 0.18); border-color: rgba(37, 99, 235, 0.55); }
+    .tier-4 { background-color: rgba(225, 29, 72, 0.18); border-color: rgba(225, 29, 72, 0.55); }
+  </style>
+</head>
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased min-h-screen flex flex-col selection:bg-amber-500 selection:text-black">
+
+  <!-- Header & Masthead -->
+  <header class="border-b border-[var(--border)] bg-[var(--card)] sticky top-0 z-30 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex flex-col gap-2.5">
+      <!-- Top meta bar -->
+      <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--muted-foreground)] border-b border-[var(--border)] pb-2">
+        <div class="flex items-center gap-2 font-semibold tracking-wider uppercase">
+          <span class="text-amber-500 font-black">🎬 KOLLYWOOD DAILY</span>
+          <span>•</span>
+          <span>CHENNAI • COIMBATORE • MADURAI</span>
+          <span>•</span>
+          <span id="edition-date">DAILY EDITION</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="openStatsModal()" class="px-2.5 py-1 rounded-md border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] hover:bg-[var(--secondary)] transition font-medium flex items-center gap-1.5">
+            <span>🏆</span>
+            <span>Scorecard</span>
+            <span id="header-streak-badge" class="font-bold text-amber-500">🔥 0</span>
+          </button>
+          <button onclick="openHelpModal()" class="px-2.5 py-1 rounded-md border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] hover:bg-[var(--secondary)] transition font-medium">
+            How to Play
+          </button>
+        </div>
+      </div>
+
+      <!-- App Title & Tanglish Category Filters -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-[var(--foreground)] flex items-center gap-2">
+            <span>KOLLY-DLE</span>
+            <span class="text-xs font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full border border-amber-500/40 bg-amber-500/10 text-amber-500">Tanglish Gazette</span>
+          </h1>
+          <p class="text-xs sm:text-sm text-[var(--muted-foreground)] mt-0.5">
+            Wordle & mini-puzzles on Kollywood movies, iconic punch dialogues, Ilaiyaraaja/Anirudh music & Chennai culture!
+          </p>
+        </div>
+
+        <!-- Cinema Theme Filter Pills -->
+        <div class="flex flex-wrap items-center gap-1.5 bg-[var(--background)] p-1 rounded-xl border border-[var(--border)]" role="group">
+          <button onclick="setCinemaFilter('all')" id="fil-all" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-bold transition">
+            ✨ All Tamil Vibes
+          </button>
+          <button onclick="setCinemaFilter('mass')" id="fil-mass" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+            🔥 Mass & Heroes
+          </button>
+          <button onclick="setCinemaFilter('music')" id="fil-music" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+            🎵 Paatu & Kuthu
+          </button>
+          <button onclick="setCinemaFilter('chennai')" id="fil-chennai" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+            ☕ Chennai & Gethu
+          </button>
+        </div>
+      </div>
+
+      <!-- Mini-Game Selection Tabs -->
+      <nav class="flex items-center gap-1.5 sm:gap-2 pt-1 overflow-x-auto" aria-label="Game Tabs">
+        <button onclick="switchGame('wordle')" id="tab-wordle" class="game-tab flex-1 sm:flex-initial px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 border">
+          <span>🟩</span>
+          <span>Kollywoodle</span>
+          <span class="hidden sm:inline text-xs font-normal opacity-75">(5-Letter Wordle)</span>
+        </button>
+        <button onclick="switchGame('quads')" id="tab-quads" class="game-tab flex-1 sm:flex-initial px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 border">
+          <span>🟨</span>
+          <span>Kollywood Connections</span>
+          <span class="hidden sm:inline text-xs font-normal opacity-75">(4x4 Categories)</span>
+        </button>
+        <button onclick="switchGame('mini')" id="tab-mini" class="game-tab flex-1 sm:flex-initial px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 border">
+          <span>🏁</span>
+          <span>5x5 Tanglish Mini</span>
+          <span class="hidden sm:inline text-xs font-normal opacity-75">(Speed Crossword)</span>
+        </button>
+        <button onclick="switchGame('dialogues')" id="tab-dialogues" class="game-tab flex-1 sm:flex-initial px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 border">
+          <span>🗣️</span>
+          <span>Punch Dialogue Match</span>
+          <span class="hidden sm:inline text-xs font-normal opacity-75">(Vadivelu & Mass)</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 py-5 flex flex-col gap-4">
+
+    <!-- Subheader Stage / Controls Bar -->
+    <section class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+      <div class="flex items-start sm:items-center gap-3">
+        <div id="stage-icon" class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-xl shrink-0 font-bold">
+          🎭
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span id="stage-badge" class="text-xs font-black uppercase tracking-wider px-2 py-0.5 rounded bg-[var(--secondary)] text-[var(--secondary-foreground)]">
+              THALAIVAR & THALAPATHY SPECIAL
+            </span>
+            <span id="stage-theme" class="text-xs text-[var(--muted-foreground)] font-semibold">
+              Tanglish Slang & Cinema Trivia
+            </span>
+          </div>
+          <p id="stage-subtitle" class="text-sm font-bold text-[var(--foreground)] mt-0.5">
+            Guess the 5-letter Tamil cinema / cultural word in 6 attempts!
+          </p>
+        </div>
+      </div>
+
+      <!-- Puzzle Index Navigation -->
+      <div class="flex items-center gap-2 self-end sm:self-center shrink-0">
+        <button onclick="prevPuzzle()" class="px-2.5 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] text-xs font-semibold transition">
+          ← Mundhaiya
+        </button>
+        <span id="stage-counter" class="text-xs font-bold px-2.5 py-1 rounded bg-[var(--background)] border border-[var(--border)]">
+          #1 / 18
+        </span>
+        <button onclick="nextPuzzle()" class="px-2.5 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] text-xs font-semibold transition">
+          Adutha →
+        </button>
+      </div>
+    </section>
+
+    <!-- Floating Toast Notifications -->
+    <div id="toast-container" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-2"></div>
+
+    <!-- =========================================================================
+         GAME 1: KOLLYWOODLE (5-LETTER TANGLISH WORDLE)
+         ========================================================================= -->
+    <section id="view-wordle" class="game-view grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+      <!-- Left: Board + Virtual Keyboard -->
+      <div class="lg:col-span-7 bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 sm:p-6 flex flex-col items-center shadow-sm">
+        
+        <!-- Clue / Action Bar -->
+        <div class="w-full flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-[var(--border)]">
+          <div class="flex items-center gap-2">
+            <span id="wordle-category-pill" class="text-xs font-bold px-2.5 py-1 rounded-md bg-amber-500/15 text-amber-500 border border-amber-500/30">
+              🔥 Mass Cinema
+            </span>
+            <span id="wordle-clue-label" class="text-xs text-[var(--muted-foreground)] font-semibold">
+              Tanglish 5-Letter Term
+            </span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="toggleWordleHint()" id="btn-wordle-hint" class="px-2.5 py-1 rounded-md text-xs font-semibold border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] transition flex items-center gap-1">
+              <span>💡</span><span>Cinema Clue</span>
+            </button>
+            <button onclick="revealWordleAnswer()" class="px-2.5 py-1 rounded-md text-xs font-semibold border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] transition">
+              Reveal
+            </button>
+          </div>
+        </div>
+
+        <!-- Hint Box -->
+        <div id="wordle-hint-box" class="hidden w-full mb-4 p-3 rounded-lg bg-[var(--background)] border border-amber-500/40 text-xs sm:text-sm text-[var(--foreground)]">
+          <span class="font-bold uppercase tracking-wider text-amber-500 mr-1.5">Director's Clue:</span>
+          <span id="wordle-hint-text">Celebrated title of Ajith Kumar, also meaning leader / head in Tamil.</span>
+        </div>
+
+        <!-- 6x5 Wordle Board -->
+        <div id="wordle-board" class="grid grid-rows-6 gap-1.5 sm:gap-2 mb-5 select-none" aria-label="Wordle Grid"></div>
+
+        <!-- Solved / Lore Card -->
+        <div id="wordle-lore-card" class="hidden w-full mb-5 p-4 rounded-xl border border-[var(--border)] bg-[var(--background)] shadow-sm">
+          <div class="flex items-center justify-between gap-2 mb-1.5">
+            <div class="flex items-center gap-2">
+              <span id="lore-status-badge" class="text-xs font-bold uppercase px-2 py-0.5 rounded bg-emerald-600 text-white">MASS HIT!</span>
+              <h3 id="lore-word-title" class="text-lg font-black tracking-wide text-[var(--foreground)]">THALA</h3>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="shareWordleResult()" class="px-3 py-1 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold hover:opacity-90 transition">
+                Share Grid 📋
+              </button>
+              <button onclick="nextPuzzle()" class="px-3 py-1 rounded-lg border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] text-xs font-bold hover:bg-[var(--secondary)] transition">
+                Next Word →
+              </button>
+            </div>
+          </div>
+          <p id="lore-definition" class="text-xs sm:text-sm text-[var(--foreground)] font-medium leading-relaxed"></p>
+          <p id="lore-dialogue" class="text-xs text-amber-500 font-semibold italic mt-1.5"></p>
+        </div>
+
+        <!-- Virtual Keyboard -->
+        <div id="wordle-keyboard" class="w-full max-w-md flex flex-col gap-1.5 select-none"></div>
+      </div>
+
+      <!-- Right: Kollywood Cinema Field Guide & Archive -->
+      <aside class="lg:col-span-5 flex flex-col gap-4">
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 sm:p-5 shadow-sm">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-[var(--foreground)] flex items-center justify-between">
+            <span>Kollywood Dictionary</span>
+            <span class="text-xs font-normal text-[var(--muted-foreground)]">Tanglish Edition</span>
+          </h2>
+          <p class="text-xs text-[var(--muted-foreground)] mt-1 leading-relaxed">
+            Every 5-letter answer is iconic in Tamil movies or Chennai pop culture. Type any valid 5-letter word to test letters.
+          </p>
+
+          <!-- Quick Cinema Category Switchers -->
+          <div class="mt-3.5 flex flex-col gap-2.5">
+            <div onclick="setCinemaFilter('mass')" class="cursor-pointer p-3 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] transition">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-[var(--foreground)]">🔥 Mass Heroes & Fandom</span>
+                <span class="text-xs text-[var(--muted-foreground)]">6 Words</span>
+              </div>
+              <p class="text-xs text-[var(--muted-foreground)] mt-1">
+                FDFS celebrations, milk abhishekams, cutouts, slow-mo walk BGM & Rajini/Kamal/Vijay/Ajith mass.
+              </p>
+            </div>
+
+            <div onclick="setCinemaFilter('music')" class="cursor-pointer p-3 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] transition">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-[var(--foreground)]">🎵 Music Directors & Kuthu</span>
+                <span class="text-xs text-[var(--muted-foreground)]">6 Words</span>
+              </div>
+              <p class="text-xs text-[var(--muted-foreground)] mt-1">
+                Dappankuthu beats, Ilaiyaraaja preludes, AR Rahman harmonies, Anirudh viral drops & gaana paatu.
+              </p>
+            </div>
+
+            <div onclick="setCinemaFilter('chennai')" class="cursor-pointer p-3 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] transition">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-[var(--foreground)]">☕ Chennai Baashai & Culture</span>
+                <span class="text-xs text-[var(--muted-foreground)]">6 Words</span>
+              </div>
+              <p class="text-xs text-[var(--muted-foreground)] mt-1">
+                Marina beach sundal, filter coffee in dabarah-tumbler, Sowcarpet thalis, auto meter & local gethu.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Solved Words Showcase -->
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 sm:p-5 shadow-sm">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-[var(--foreground)]">Wordle Theater Archive</h3>
+            <span id="wordle-solved-count" class="text-xs font-semibold text-[var(--muted-foreground)]">0 / 18 Unlocked</span>
+          </div>
+          <div id="wordle-archive-pills" class="grid grid-cols-3 gap-1.5 max-h-56 overflow-y-auto pr-1"></div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- =========================================================================
+         GAME 2: KOLLYWOOD CONNECTIONS (4x4 PUZZLE)
+         ========================================================================= -->
+    <section id="view-quads" class="game-view hidden flex-col gap-4">
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 sm:p-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-[var(--border)]">
+          <div>
+            <span id="quads-theme-badge" class="text-xs font-bold px-2.5 py-1 rounded-md bg-amber-500/15 text-amber-500 border border-amber-500/30">
+              🎬 Kollywood Board #1
+            </span>
+            <h2 id="quads-board-title" class="text-base sm:text-lg font-bold text-[var(--foreground)] mt-1">
+              Group 16 Tamil cinema items into 4 thematic sets of 4.
+            </h2>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1.5 text-xs font-semibold text-[var(--muted-foreground)]">
+              <span>Lives left:</span>
+              <div id="quads-mistakes-dots" class="flex items-center gap-1"></div>
+            </div>
+            <button onclick="giveQuadsHint()" class="px-2.5 py-1 rounded-md text-xs font-semibold border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] transition">
+              💡 Hint (Pair 2)
+            </button>
+          </div>
+        </div>
+
+        <!-- Solved Sets -->
+        <div id="quads-solved-list" class="flex flex-col gap-2.5 mb-3"></div>
+
+        <!-- 4x4 Grid -->
+        <div id="quads-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 select-none"></div>
+
+        <!-- Controls -->
+        <div class="flex flex-wrap items-center justify-center gap-2.5 mt-5 pt-4 border-t border-[var(--border)]">
+          <button onclick="shuffleQuads()" class="px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] text-xs sm:text-sm font-semibold transition">
+            🔀 Shuffle Items
+          </button>
+          <button onclick="deselectAllQuads()" class="px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] text-xs sm:text-sm font-semibold transition">
+            Deselect All
+          </button>
+          <button onclick="submitQuadsGuess()" id="btn-quads-submit" class="px-5 py-2 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs sm:text-sm font-bold hover:opacity-90 transition disabled:opacity-40">
+            Submit Group (4)
+          </button>
+          <button onclick="revealAllQuads()" class="px-3.5 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] text-xs font-semibold transition">
+            Reveal All
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         GAME 3: 5x5 TANGLISH MINI CROSSWORD
+         ========================================================================= -->
+    <section id="view-mini" class="game-view hidden grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+      <!-- Left: 5x5 Grid & Virtual Controls -->
+      <div class="lg:col-span-6 bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 sm:p-6 flex flex-col items-center shadow-sm">
+        <div class="w-full flex items-center justify-between gap-2 mb-3 pb-2.5 border-b border-[var(--border)]">
+          <div class="flex items-center gap-2">
+            <span id="mini-title-badge" class="text-xs font-bold px-2.5 py-1 rounded-md bg-amber-500/15 text-amber-500 border border-amber-500/30">
+              5x5 Tanglish Mini
+            </span>
+            <span id="mini-timer" class="text-xs font-mono font-bold px-2 py-1 rounded bg-[var(--background)] border border-[var(--border)]">
+              00:00
+            </span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="checkMiniGrid()" class="px-2.5 py-1 rounded-md border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] text-xs font-semibold transition">
+              ✓ Check
+            </button>
+            <button onclick="revealMiniCell()" class="px-2.5 py-1 rounded-md border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] text-xs font-semibold transition">
+              💡 Letter
+            </button>
+            <button onclick="revealMiniGrid()" class="px-2.5 py-1 rounded-md border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] text-xs font-semibold transition">
+              Solve
+            </button>
+          </div>
+        </div>
+
+        <!-- Active Clue Card -->
+        <div onclick="toggleMiniDirection()" class="w-full mb-4 p-3 rounded-lg bg-[var(--secondary)] text-[var(--secondary-foreground)] border border-[var(--border)] cursor-pointer flex items-center justify-between gap-2">
+          <div>
+            <span id="mini-active-clue-label" class="text-xs font-black uppercase tracking-wider mr-2 text-amber-500">1 ACROSS</span>
+            <span id="mini-active-clue-text" class="text-xs sm:text-sm font-semibold">Tap any square to begin</span>
+          </div>
+          <span class="text-xs opacity-75 shrink-0">Flip direction ⇄</span>
+        </div>
+
+        <!-- 5x5 Board -->
+        <div id="mini-grid" class="grid grid-cols-5 gap-1 bg-[var(--border)] p-1.5 rounded-xl border border-[var(--border)] w-full max-w-[300px] aspect-square select-none"></div>
+
+        <!-- Mini Virtual Keyboard -->
+        <div id="mini-keyboard" class="w-full max-w-md flex flex-col gap-1.5 mt-4 select-none"></div>
+      </div>
+
+      <!-- Right: Clues Accordion / Lists -->
+      <div class="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
+          <h3 class="text-xs font-black uppercase tracking-wider text-amber-500 border-b border-[var(--border)] pb-2 mb-2.5">
+            Across Clues
+          </h3>
+          <ul id="mini-clues-across" class="flex flex-col gap-1.5 text-xs sm:text-sm"></ul>
+        </div>
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
+          <h3 class="text-xs font-black uppercase tracking-wider text-amber-500 border-b border-[var(--border)] pb-2 mb-2.5">
+            Down Clues
+          </h3>
+          <ul id="mini-clues-down" class="flex flex-col gap-1.5 text-xs sm:text-sm"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         GAME 4: PUNCH DIALOGUE & VADIVELU MATCH
+         ========================================================================= -->
+    <section id="view-dialogues" class="game-view hidden flex-col gap-4">
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 sm:p-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-[var(--border)]">
+          <div>
+            <span class="text-xs font-bold px-2.5 py-1 rounded-md bg-amber-500/15 text-amber-500 border border-amber-500/30">
+              🗣️ Kollywood Punch & Comedy Match
+            </span>
+            <h2 class="text-base sm:text-lg font-bold text-[var(--foreground)] mt-1">
+              Match the Iconic Dialogue, the Star / Comedian, and the Movie!
+            </h2>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="dm-score-pill" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-[var(--background)] border border-[var(--border)]">
+              Score: 0 / 6
+            </span>
+            <button onclick="resetDialogueRound()" class="px-3 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)] text-xs font-semibold transition">
+              New Round ↻
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch">
+          <!-- Left: Current Dialogue Challenge Card -->
+          <div class="md:col-span-5 bg-[var(--background)] border border-[var(--border)] rounded-xl p-5 flex flex-col justify-between">
+            <div>
+              <span id="dm-stage-badge" class="text-xs font-bold uppercase tracking-wider text-amber-500">
+                SCENE #1 OF 6
+              </span>
+              <h3 id="dm-quote-text" class="text-lg sm:text-xl font-black text-[var(--foreground)] mt-2 leading-snug">
+                "Naan oru thadava sonna, nooru thadava sonna madhiri!"
+              </h3>
+              <p id="dm-quote-meaning" class="text-xs text-[var(--muted-foreground)] mt-2 italic">
+                (If I say it once, it's equivalent to saying it a hundred times!)
+              </p>
+            </div>
+
+            <div class="mt-5 flex flex-col gap-2 pt-4 border-t border-[var(--border)]">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-semibold text-[var(--muted-foreground)]">🎭 Selected Star:</span>
+                <span id="dm-sel-actor" class="font-bold text-[var(--foreground)]">—</span>
+              </div>
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-semibold text-[var(--muted-foreground)]">🎬 Selected Movie:</span>
+                <span id="dm-sel-movie" class="font-bold text-[var(--foreground)]">—</span>
+              </div>
+              <button onclick="submitDialogueMatch()" id="btn-dm-submit" class="mt-3 w-full py-2.5 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs sm:text-sm font-bold hover:opacity-90 transition">
+                Lock In Cinema Pair ⚡
+              </button>
+            </div>
+          </div>
+
+          <!-- Right: Two Selection Columns (Actors vs Movies) -->
+          <div class="md:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="flex flex-col gap-2">
+              <div class="text-xs font-bold uppercase tracking-wider px-2 py-1.5 rounded bg-[var(--secondary)] text-[var(--secondary-foreground)] text-center">
+                Actor / Legend
+              </div>
+              <div id="dm-col-actors" class="flex flex-col gap-2"></div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <div class="text-xs font-bold uppercase tracking-wider px-2 py-1.5 rounded bg-[var(--secondary)] text-[var(--secondary-foreground)] text-center">
+                Kollywood Movie
+              </div>
+              <div id="dm-col-movies" class="flex flex-col gap-2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Player Stats Modal -->
+  <div id="modal-stats" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
+    <div class="bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] rounded-2xl max-w-md w-full p-5 shadow-2xl">
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--border)]">
+        <h2 class="text-base font-bold flex items-center gap-2">
+          <span>🎟️</span>
+          <span>Kollywood Fan Pass & Stats</span>
+        </h2>
+        <button onclick="closeModals()" class="text-xs font-bold px-2 py-1 rounded border border-[var(--border)] hover:bg-[var(--secondary)]">✕</button>
+      </div>
+      <div class="grid grid-cols-4 gap-2 my-4 text-center">
+        <div class="p-3 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <div id="stat-played" class="text-xl font-black">0</div>
+          <div class="text-xs text-[var(--muted-foreground)]">Played</div>
+        </div>
+        <div class="p-3 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <div id="stat-winpct" class="text-xl font-black">100%</div>
+          <div class="text-xs text-[var(--muted-foreground)]">Hit %</div>
+        </div>
+        <div class="p-3 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <div id="stat-streak" class="text-xl font-black text-amber-500">0</div>
+          <div class="text-xs text-[var(--muted-foreground)]">Streak</div>
+        </div>
+        <div class="p-3 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <div id="stat-quads" class="text-xl font-black">0</div>
+          <div class="text-xs text-[var(--muted-foreground)]">Quads Won</div>
+        </div>
+      </div>
+      <p class="text-xs text-[var(--muted-foreground)] mb-4">
+        Play Kollywoodle, Connections, 5x5 Minis, and Punch Dialogue match to level up your Tamil cinema rank from "FDFS Fan" to "Cinema Rasigan"!
+      </p>
+      <div class="flex justify-end gap-2">
+        <button onclick="shareWordleResult()" class="px-4 py-2 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold">
+          Copy Score Summary 📋
+        </button>
+        <button onclick="closeModals()" class="px-4 py-2 rounded-lg border border-[var(--border)] text-xs font-semibold">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help / Instructions Modal -->
+  <div id="modal-help" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
+    <div class="bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] rounded-2xl max-w-lg w-full p-5 shadow-2xl max-h-[85vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--border)]">
+        <h2 class="text-base font-bold">How to Play KOLLY-DLE</h2>
+        <button onclick="closeModals()" class="text-xs font-bold px-2 py-1 rounded border border-[var(--border)] hover:bg-[var(--secondary)]">✕</button>
+      </div>
+      <div class="flex flex-col gap-3 my-4 text-xs sm:text-sm leading-relaxed">
+        <div class="p-3 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <div class="font-bold text-[var(--foreground)] mb-1">🟩 1. Kollywoodle (5-Letter Tanglish Wordle)</div>
+          <p class="text-[var(--muted-foreground)]">
+            Guess the 5-letter Tamil movie / cultural term in 6 tries. Green = right position, Amber = letter is in the word but wrong spot, Gray = not in the word. Every solved puzzle reveals the full movie lore & dialogue!
+          </p>
+        </div>
+        <div class="p-3 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <div class="font-bold text-[var(--foreground)] mb-1">🟨 2. Kollywood Connections (4x4)</div>
+          <p class="text-[var(--muted-foreground)]">
+            Group 16 cinema items into 4 secret categories (e.g. <i>Anirudh Chartbusters</i>, <i>Mani Ratnam Classics</i>, <i>Chennai Beach Street Foods</i>, <i>Vadivelu Characters</i>).
+          </p>
+        </div>
+        <div class="p-3 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <div class="font-bold text-[var(--foreground)] mb-1">🏁 3. 5x5 Tanglish Mini & 🗣️ Dialogue Match</div>
+          <p class="text-[var(--muted-foreground)]">
+            Solve speed 5x5 crosswords packed with Tamil cinema clues, or match historic punch dialogues like <i>"Vanthenda Paalkaran"</i> and <i>"Building strong, basement weak"</i> to their star and film!
+          </p>
+        </div>
+      </div>
+      <div class="flex justify-end">
+        <button onclick="closeModals()" class="px-4 py-2 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-bold">
+          Start Playing →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================================
+       TAMIL CINEMA & CULTURE PUZZLE DATABASE
+       ========================================================================= */
+    const TAMIL_WORDLES = [
+      // MASS & HEROES
+      {
+        id: 'kw-1', cat: 'mass', word: 'THALA',
+        clue: 'Ultimate mass title of Ajith Kumar, also meaning "Leader" or "Head" in Tamil.',
+        lore: 'THALA: The revered moniker given to Ajith Kumar following the blockbuster movie Dheena (2001) directed by AR Murugadoss.',
+        dialogue: '"En vazhi, thani vazhi!" • Dheena (2001)'
+      },
+      {
+        id: 'kw-2', cat: 'mass', word: 'GETHU',
+        clue: 'Chennai slang for swag, supreme confidence, high pride, or dominance.',
+        lore: 'GETHU: Pure Chennai youth vernacular for walking with supreme attitude and peerless style.',
+        dialogue: '"Gethu kaattuvom da!"'
+      },
+      {
+        id: 'kw-3', cat: 'mass', word: 'VETRI',
+        clue: 'Tamil word for Victory, and the name of director Vetri Maaran (Asuran, Vada Chennai).',
+        lore: 'VETRI: Means victory in Tamil. Also synonymous with modern realistic Tamil cinema auteur Vetri Maaran.',
+        dialogue: '"Jayichitom Maara!" • Soorarai Pottru'
+      },
+      {
+        id: 'kw-4', cat: 'mass', word: 'HEROS',
+        clue: 'The cinematic icons celebrated with 80-foot cutouts in front of Chennai theatres.',
+        lore: 'HEROES / HERO: The central lifeblood of mass Kollywood cinema worship.',
+        dialogue: '"Singam da... Durai Singam!" • Singam'
+      },
+      {
+        id: 'kw-5', cat: 'mass', word: 'THALA', // alternative mass
+        cat: 'mass', word: 'ASURA',
+        clue: 'Dhanush & Vetri Maaran\'s National Award-winning violent rural epic (2019).',
+        lore: 'ASURAN: Blockbuster rural drama showcasing Dhanush as Sivasaami fighting generational oppression.',
+        dialogue: '"Kaadu irundha eduthukuvaanunga, roova irundha pudungikuvaanunga... Padippa mattum tharaathe!"'
+      },
+      {
+        id: 'kw-6', cat: 'mass', word: 'LEOOO', // 5-letter variant for LEO
+        cat: 'mass', word: 'VIKRM',
+        clue: 'Kamal Haasan & Lokesh Kanagaraj\'s 2022 universe blockbuster (5-letter short).',
+        lore: 'VIKRAM: The blockbuster action film that birthed the LCU (Lokesh Cinematic Universe) with Rolex and Dilli.',
+        dialogue: '"Aarambikalangala?" • Kamal Haasan in Vikram'
+      },
+
+      // MUSIC & KUTHU
+      {
+        id: 'kw-7', cat: 'music', word: 'KUTHU',
+        clue: 'High-energy folk dance rhythm (Dappankuthu) played with urumee and thavil at FDFS.',
+        lore: 'DAPPANKUTHU: The quintessential fast-paced Tamil percussion beat that sets theatre aisles on fire.',
+        dialogue: '"Vaathi Coming oththu... kuthu!" • Master'
+      },
+      {
+        id: 'kw-8', cat: 'music', word: 'PAATU',
+        clue: 'Tamil word for song / musical track (from Ilaiyaraaja melodies to gaana).',
+        lore: 'PAATU: Music and songs are inseparable from Tamil films, where background scores drive emotions.',
+        dialogue: '"Thenpandi seemayile therodum veedhiyile..." • Nayakan'
+      },
+      {
+        id: 'kw-9', cat: 'music', word: 'GAANA',
+        clue: 'North Chennai street folk song genre celebrated in films from Madras to Attakathi.',
+        lore: 'GAANA: Urban Chennai folk music genre narrating working-class life, philosophy, and heartbreaks.',
+        dialogue: '"Kaasum panamum thudhum... gaana vibe!"'
+      },
+      {
+        id: 'kw-10', cat: 'music', word: 'ANIII', // Anirudh 5 letter
+        cat: 'music', word: 'NAAYI',
+        cat: 'music', word: 'ISAIY',
+        clue: 'Tamil word for "Music" (Isai) — title held by Isaignani Ilaiyaraaja (5-letter variant).',
+        lore: 'ISAI: Music is worshipped in Tamil Nadu, with Ilaiyaraaja revered as the Maestro / Isaignani.',
+        dialogue: '"Raja Raja dhaan!" • Everlasting Maestro'
+      },
+      {
+        id: 'kw-11', cat: 'music', word: 'THALM',
+        clue: 'Rhythm / beat pattern in Carnatic and film music composition.',
+        lore: 'THAALAM: The metric cycle and heartbeat of South Indian musical rhythm.',
+        dialogue: '"Thaalam thaan paatoda uyir!"'
+      },
+      {
+        id: 'kw-12', cat: 'music', word: 'NAAYI', // Tanglish comedy
+        cat: 'music', word: 'KAVIN',
+        clue: 'Young Kollywood hero of "Dada" and "Star", also Tamil word for beauty/radiance.',
+        lore: 'KAVIN: Rising actor who transitioned from TV serials and Bigg Boss to critical Kollywood box office hits.',
+        dialogue: '"Cinema dhaan namakku ellame!"'
+      },
+
+      // CHENNAI & GETHU
+      {
+        id: 'kw-13', cat: 'chennai', word: 'MARNA',
+        clue: 'World\'s second-longest urban natural beach in Chennai (short 5 letters).',
+        lore: 'MARINA BEACH: The epicenter of Chennai social life, sundal vendors, political speeches, and movie dates.',
+        dialogue: '"Marina beach sundal saapta dhaan Chennai feel varum!"'
+      },
+      {
+        id: 'kw-14', cat: 'chennai', word: 'CHAIY',
+        clue: 'Evening cutting tea / Sulaimani served at Chennai tea stalls with hot paruppu vadai.',
+        lore: 'CHAI & VADAI: The standard conversation fuel outside every Tamil film studio and preview theatre.',
+        dialogue: '"Bhai, oru cutting tea-yum rendi medhu vadaiyum!"'
+      },
+      {
+        id: 'kw-15', cat: 'chennai', word: 'DULLA',
+        clue: 'Tanglish slang for slow, lifeless, or boring ("Enna pa padam dulla irukku").',
+        lore: 'DULL: Classic Chennai review slang used by fans stepping out of theatre screenings.',
+        dialogue: '"Padam konjam dulla irundhalum BGM thooki niruthiduchu!"'
+      },
+      {
+        id: 'kw-16', cat: 'chennai', word: 'APPIE',
+        clue: 'Chennai slang for "Get lost" or disappearing from the spot instantly.',
+        lore: 'APPIE / APICAR: Classic Madras slang meaning to make a quick exit or escape.',
+        dialogue: '"Irundha sanda varum, silent-aa appie aayidu!"'
+      },
+      {
+        id: 'kw-17', cat: 'chennai', word: 'SOOOR',
+        clue: 'Sudha Kongara & Suriya\'s acclaimed pilot drama (Soorarai Pottru).',
+        lore: 'SOORARAI POTTRU: National Award winning aviation drama inspired by Captain GR Gopinath.',
+        dialogue: '"Kaasu irukuravan mattum thaan parakkanuma?"'
+      },
+      {
+        id: 'kw-18', cat: 'chennai', word: 'BEAST',
+        clue: 'Nelson & Thalapathy Vijay\'s mall-hostage action thriller featuring "Arabic Kuthu".',
+        lore: 'BEAST: Action flick known for Anirudh\'s global smash hit "Arabic Kuthu" and Vijay\'s Veera Raghavan.',
+        dialogue: '"Meaner, leaner, stronger!" • Beast'
+      }
+    ];
+
+    const TAMIL_QUADS = [
+      {
+        id: 'q-kolly-1',
+        title: 'Kollywood Heavyweights & Culture #1',
+        categories: [
+          {
+            tier: 1,
+            name: '👑 Superstar Rajinikanth Blockbusters',
+            desc: 'Timeless Thalaivar box-office monster hits.',
+            items: ['BAASHA', 'PADAYAPPA', 'ANNAMALAI', 'JAILER']
+          },
+          {
+            tier: 2,
+            name: '🔥 Anirudh Ravichander Viral Albums',
+            desc: 'Banger albums composed by the Rockstar Anirudh.',
+            items: ['MASTER', 'VIKRAM', 'THIRUCHITRAMBALAM', 'JAILER']
+          },
+          {
+            tier: 3,
+            name: '☕ Classic Chennai Street Food Staples',
+            desc: 'Things you order at Marina Beach and street kadas.',
+            items: ['THEENGAI SUNDAL', 'KOTHU PAROTTA', 'FILTER COFFEE', 'KUZHI PANIYARAM']
+          },
+          {
+            tier: 4,
+            name: '🎭 Iconic Vadivelu Comedy Alter-Egos',
+            desc: 'Legendary comedy characters immortalized in Tamil memes.',
+            items: ['NAAI SEKAR', 'KAIPULLA', 'ENCOUNTER EKAMBARAM', 'NESAMANI']
+          }
+        ]
+      },
+      {
+        id: 'q-kolly-2',
+        title: 'Mani Ratnam, LCU & Tamil Cinema Lore',
+        categories: [
+          {
+            tier: 1,
+            name: '🎥 Legendary Mani Ratnam Masterpieces',
+            desc: 'Classics by the auteur of Indian cinema.',
+            items: ['NAYAKAN', 'THALAPATHI', 'ROJA', 'BOMBAY']
+          },
+          {
+            tier: 2,
+            name: '🕶️ Lokesh Cinematic Universe (LCU) Elements',
+            desc: 'Hallmarks of Lokesh Kanagaraj\'s universe.',
+            items: ['DILLI', 'ROLEX', 'GHOST MASK', 'BIRYANI FEAST']
+          },
+          {
+            tier: 3,
+            name: '🎺 Traditional Tamil Festival & Folk Instruments',
+            desc: 'Native sounds heard during temple thiruvizha.',
+            items: ['NADASWARAM', 'THAVIL', 'PARAI DRUM', 'URUMEE']
+          },
+          {
+            tier: 4,
+            name: '🗣️ Chennai Madras Baashai Slang Words',
+            desc: 'Authentic local expressions spoken on Chennai streets.',
+            items: ['MAMA', 'NASTHI', 'BEJAAR', 'GALATTA']
+          }
+        ]
+      }
+    ];
+
+    const TAMIL_MINIS = [
+      {
+        id: 'm-kolly-1',
+        title: 'Chennai & Mass Cinema 5x5',
+        grid: [
+          ['T','H','A','L','A'],
+          ['H','E','R','O','S'],
+          ['A','S','U','R','A'],
+          ['L','O','K','E','S'],
+          ['A','S','A','I','I']
+        ],
+        across: [
+          { num: 1, row: 0, col: 0, len: 5, clue: 'Ajith Kumar\'s revered title / leader in Tamil (5)', ans: 'THALA' },
+          { num: 6, row: 1, col: 0, len: 5, clue: 'Protagonists with giant cutouts outside Rohini theatre (5)', ans: 'HEROS' },
+          { num: 7, row: 2, col: 0, len: 5, clue: 'Dhanush\'s national-award winning Vetri Maaran film (5)', ans: 'ASURA' },
+          { num: 8, row: 3, col: 0, len: 5, clue: 'Master & Vikram director Kanagaraj (first 5) (5)', ans: 'LOKES' },
+          { num: 9, row: 4, col: 0, len: 5, clue: 'Desire or longing in Tamil / poem rhythm (5)', ans: 'ASAII' }
+        ],
+        down: [
+          { num: 1, row: 0, col: 0, len: 5, clue: 'Thalaivar Rajinikanth\'s epic friendship classic with Mammootty (5)', ans: 'THALA' },
+          { num: 2, row: 0, col: 1, len: 5, clue: 'Heated summer afternoon in Madurai or Chennai (5)', ans: 'HESOS' },
+          { num: 3, row: 0, col: 2, len: 5, clue: 'Maestro Rahman\'s initial or music aura (5)', ans: 'ARUKA' },
+          { num: 4, row: 0, col: 3, len: 5, clue: 'Beloved Kollywood comedian or actor (5)', ans: 'LOREI' },
+          { num: 5, row: 0, col: 4, len: 5, clue: 'Traditional Tamil auspicious greeting sound (5)', ans: 'ASASI' }
+        ]
+      },
+      {
+        id: 'm-kolly-2',
+        title: 'Kuthu Beats & Anirudh 5x5',
+        grid: [
+          ['K','U','T','H','U'],
+          ['U','L','A','G','A'],
+          ['T','A','M','I','L'],
+          ['H','G','I','R','L'],
+          ['U','A','L','L','Y']
+        ],
+        across: [
+          { num: 1, row: 0, col: 0, len: 5, clue: 'Fast-paced folk street dance beat (5)', ans: 'KUTHU' },
+          { num: 6, row: 1, col: 0, len: 5, clue: '"___ Nayagan" — Kamal Haasan\'s title (5)', ans: 'ULAGA' },
+          { num: 7, row: 2, col: 0, len: 5, clue: 'The classical language and cinema identity (5)', ans: 'TAMIL' },
+          { num: 8, row: 3, col: 0, len: 5, clue: 'Heroine in an AR Murugadoss commercial entertainer (5)', ans: 'HGIRL' },
+          { num: 9, row: 4, col: 0, len: 5, clue: 'Street or narrow lane where auto drivers hang out (5)', ans: 'UALLY' }
+        ],
+        down: [
+          { num: 1, row: 0, col: 0, len: 5, clue: 'High-energy percussion drum rhythm (5)', ans: 'KUTHU' },
+          { num: 2, row: 0, col: 1, len: 5, clue: 'Tamil world or universe (Ulagam) short (5)', ans: 'ULAGA' },
+          { num: 3, row: 0, col: 2, len: 5, clue: 'Tamil cuisine savory snack / spicy broth (5)', ans: 'TAMIL' },
+          { num: 4, row: 0, col: 3, len: 5, clue: 'Hot filter coffee warmth on a rainy Chennai evening (5)', ans: 'HGIRL' },
+          { num: 5, row: 0, col: 4, len: 5, clue: 'Friend / companion in Chennai slang (5)', ans: 'UALLY' }
+        ]
+      }
+    ];
+
+    const TAMIL_DIALOGUES = [
+      {
+        quote: '"Naan oru thadava sonna, nooru thadava sonna madhiri!"',
+        meaning: 'If I say it once, it is equivalent to saying it a hundred times!',
+        actor: 'Superstar Rajinikanth',
+        movie: 'Baasha (1995)'
+      },
+      {
+        quote: '"Building strong-u, aana basement weak-u!"',
+        meaning: 'The building looks rock strong, but the foundation is totally weak!',
+        actor: 'Vaigai Puyal Vadivelu',
+        movie: 'Thalainagaram (2006)'
+      },
+      {
+        quote: '"En vazhi... thani vazhi! Seendadhey!"',
+        meaning: 'My path is an independent unique path! Do not cross it!',
+        actor: 'Superstar Rajinikanth',
+        movie: 'Padayappa (1999)'
+      },
+      {
+        quote: '"I am waiting!"',
+        meaning: 'The ultimate calm pre-interval mass showdown declaration.',
+        actor: 'Thalapathy Vijay',
+        movie: 'Thuppakki (2012)'
+      },
+      {
+        quote: '"Vandhootomnu sollu, thirumba vandhootomnu sollu!"',
+        meaning: 'Tell them we have arrived, tell them we are back!',
+        actor: 'Superstar Rajinikanth',
+        movie: 'Kabali (2016)'
+      },
+      {
+        quote: '"Aahaa... oru mudivoda thaan vandhurukkeenga!"',
+        meaning: 'Aha! You have arrived with a strict agenda to ruin me!',
+        actor: 'Vaigai Puyal Vadivelu',
+        movie: 'Friends (Contractor Nesamani)'
+      }
+    ];
+
+    /* =========================================================================
+       APPLICATION STATE
+       ========================================================================= */
+    let currentCinemaFilter = 'all'; // 'all' | 'mass' | 'music' | 'chennai'
+    let currentGame = 'wordle';
+
+    // Wordle state
+    let filteredWordles = [...TAMIL_WORDLES];
+    let wordleIndex = 0;
+    let wordleGuesses = [];
+    let currentGuess = '';
+    let wordleStatus = 'playing';
+    let solvedWordleIds = new Set();
+
+    // Quads state
+    let quadsIndex = 0;
+    let quadsItems = [];
+    let quadsSelected = new Set();
+    let quadsSolvedTiers = [];
+    let quadsMistakes = 4;
+
+    // Mini state
+    let miniIndex = 0;
+    let miniUserGrid = [];
+    let miniActiveRow = 0;
+    let miniActiveCol = 0;
+    let miniDir = 'across';
+    let miniSeconds = 0;
+    let miniTimerId = null;
+
+    // Dialogue Match State
+    let dmIndex = 0;
+    let dmScore = 0;
+    let dmSelected = { actor: null, movie: null };
+    let dmSolvedIndices = new Set();
+    let dmShuffledActors = [];
+    let dmShuffledMovies = [];
+
+    // Global Stats
+    let stats = { played: 0, won: 0, streak: 0, quadsWon: 0 };
+
+    /* =========================================================================
+       INITIALIZATION
+       ========================================================================= */
+    function init() {
+      const now = new Date();
+      document.getElementById('edition-date').textContent = now.toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric'
+      }).toUpperCase();
+
+      setCinemaFilter('all');
+      switchGame('wordle');
+      initDialogueRound();
+
+      window.addEventListener('keydown', handleKeyInput);
+    }
+
+    function showToast(msg, duration = 2200) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'px-4 py-2 rounded-xl bg-amber-500 text-black text-xs sm:text-sm font-black shadow-2xl border border-amber-300 transition-all';
+      toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 250);
+      }, duration);
+    }
+
+    function setCinemaFilter(filter) {
+      currentCinemaFilter = filter;
+      ['all', 'mass', 'music', 'chennai'].forEach(f => {
+        const btn = document.getElementById(`fil-${f}`);
+        if (f === filter) {
+          btn.className = 'filter-btn px-3 py-1.5 rounded-lg text-xs font-black transition bg-amber-500 text-black shadow-sm';
+        } else {
+          btn.className = 'filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--secondary)]';
+        }
+      });
+
+      filteredWordles = filter === 'all'
+        ? [...TAMIL_WORDLES]
+        : TAMIL_WORDLES.filter(w => w.cat === filter);
+      wordleIndex = 0;
+
+      loadCurrentPuzzle();
+    }
+
+    function switchGame(game) {
+      currentGame = game;
+      ['wordle', 'quads', 'mini', 'dialogues'].forEach(g => {
+        const tab = document.getElementById(`tab-${g}`);
+        const view = document.getElementById(`view-${g}`);
+        if (g === game) {
+          tab.className = 'game-tab flex-1 sm:flex-initial px-3.5 py-2 rounded-lg text-xs sm:text-sm font-black transition flex items-center justify-center gap-2 border border-amber-500 bg-amber-500 text-black shadow-sm';
+          view.classList.remove('hidden');
+          if (g === 'wordle' || g === 'mini') view.classList.add('grid');
+          else view.classList.add('flex');
+        } else {
+          tab.className = 'game-tab flex-1 sm:flex-initial px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-2 border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] hover:bg-[var(--secondary)]';
+          view.classList.add('hidden');
+          view.classList.remove('grid', 'flex');
+        }
+      });
+
+      loadCurrentPuzzle();
+    }
+
+    function loadCurrentPuzzle() {
+      if (currentGame === 'wordle') {
+        loadWordle(wordleIndex);
+      } else if (currentGame === 'quads') {
+        loadQuads(quadsIndex);
+      } else if (currentGame === 'mini') {
+        loadMini(miniIndex);
+      } else if (currentGame === 'dialogues') {
+        renderDialogueStage();
+        updateStageMeta('🗣️ PUNCH & COMEDY', 'Iconic Vadivelu & Thalaivar Scenes', 'Match the dialogue to the star and film!', dmIndex + 1, TAMIL_DIALOGUES.length);
+      }
+    }
+
+    function updateStageMeta(badge, theme, subtitle, idx, total) {
+      document.getElementById('stage-badge').textContent = badge;
+      document.getElementById('stage-theme').textContent = theme;
+      document.getElementById('stage-subtitle').textContent = subtitle;
+      document.getElementById('stage-counter').textContent = `#${idx} / ${total}`;
+    }
+
+    function prevPuzzle() {
+      if (currentGame === 'wordle') {
+        wordleIndex = (wordleIndex - 1 + filteredWordles.length) % filteredWordles.length;
+        loadWordle(wordleIndex);
+      } else if (currentGame === 'quads') {
+        quadsIndex = (quadsIndex - 1 + TAMIL_QUADS.length) % TAMIL_QUADS.length;
+        loadQuads(quadsIndex);
+      } else if (currentGame === 'mini') {
+        miniIndex = (miniIndex - 1 + TAMIL_MINIS.length) % TAMIL_MINIS.length;
+        loadMini(miniIndex);
+      } else if (currentGame === 'dialogues') {
+        dmIndex = (dmIndex - 1 + TAMIL_DIALOGUES.length) % TAMIL_DIALOGUES.length;
+        renderDialogueStage();
+      }
+    }
+
+    function nextPuzzle() {
+      if (currentGame === 'wordle') {
+        wordleIndex = (wordleIndex + 1) % filteredWordles.length;
+        loadWordle(wordleIndex);
+      } else if (currentGame === 'quads') {
+        quadsIndex = (quadsIndex + 1) % TAMIL_QUADS.length;
+        loadQuads(quadsIndex);
+      } else if (currentGame === 'mini') {
+        miniIndex = (miniIndex + 1) % TAMIL_MINIS.length;
+        loadMini(miniIndex);
+      } else if (currentGame === 'dialogues') {
+        dmIndex = (dmIndex + 1) % TAMIL_DIALOGUES.length;
+        renderDialogueStage();
+      }
+    }
+
+    /* =========================================================================
+       GAME 1: KOLLYWOODLE
+       ========================================================================= */
+    function loadWordle(idx) {
+      const p = filteredWordles[idx];
+      wordleGuesses = [];
+      currentGuess = '';
+      wordleStatus = 'playing';
+
+      document.getElementById('wordle-category-pill').textContent = p.cat === 'mass' ? '🔥 Mass Cinema' : (p.cat === 'music' ? '🎵 Paatu & Kuthu' : '☕ Chennai Gethu');
+      document.getElementById('wordle-hint-text').textContent = p.clue;
+      document.getElementById('wordle-hint-box').classList.add('hidden');
+      document.getElementById('wordle-lore-card').classList.add('hidden');
+
+      updateStageMeta(
+        `KOLLYWOODLE • ${p.cat.toUpperCase()}`,
+        p.clue.slice(0, 45) + '...',
+        'Guess the 5-letter Tamil cinema / cultural term in 6 tries.',
+        idx + 1,
+        filteredWordles.length
+      );
+
+      renderWordleBoard();
+      renderWordleKeyboard();
+      renderWordleArchive();
+    }
+
+    function renderWordleBoard() {
+      const board = document.getElementById('wordle-board');
+      board.innerHTML = '';
+      const target = filteredWordles[wordleIndex].word;
+
+      for (let r = 0; r < 6; r++) {
+        const row = document.createElement('div');
+        row.id = `wordle-row-${r}`;
+        row.className = 'grid grid-cols-5 gap-1.5 sm:gap-2';
+
+        const isSubmitted = r < wordleGuesses.length;
+        const isCurrent = r === wordleGuesses.length && wordleStatus === 'playing';
+        const str = isSubmitted ? wordleGuesses[r] : (isCurrent ? currentGuess : '');
+        const evals = isSubmitted ? evaluateWordle(str, target) : [];
+
+        for (let c = 0; c < 5; c++) {
+          const tile = document.createElement('div');
+          const char = str[c] || '';
+          let cls = 'w-12 h-12 sm:w-14 sm:h-14 rounded-xl border-2 flex items-center justify-center text-lg sm:text-xl font-black uppercase transition-all ';
+
+          if (isSubmitted) {
+            cls += `tile-flip state-${evals[c]} `;
+            tile.style.animationDelay = `${c * 70}ms`;
+          } else if (char) {
+            cls += 'border-[var(--foreground)] bg-[var(--background)] text-[var(--foreground)] tile-pop ';
+          } else {
+            cls += 'border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] ';
+          }
+
+          tile.className = cls;
+          tile.textContent = char;
+          row.appendChild(tile);
+        }
+        board.appendChild(row);
+      }
+    }
+
+    function evaluateWordle(guess, target) {
+      const res = Array(5).fill('absent');
+      const tArr = target.split('');
+      const gArr = guess.split('');
+
+      for (let i = 0; i < 5; i++) {
+        if (gArr[i] === tArr[i]) {
+          res[i] = 'correct';
+          tArr[i] = null;
+          gArr[i] = null;
+        }
+      }
+      for (let i = 0; i < 5; i++) {
+        if (gArr[i] !== null) {
+          const idx = tArr.indexOf(gArr[i]);
+          if (idx !== -1) {
+            res[i] = 'present';
+            tArr[idx] = null;
+          }
+        }
+      }
+      return res;
+    }
+
+    function renderWordleKeyboard() {
+      const kb = document.getElementById('wordle-keyboard');
+      kb.innerHTML = '';
+      const target = filteredWordles[wordleIndex].word;
+
+      const keyState = {};
+      const priority = { absent: 1, present: 2, correct: 3 };
+      wordleGuesses.forEach(g => {
+        const evals = evaluateWordle(g, target);
+        for (let i = 0; i < 5; i++) {
+          const ch = g[i];
+          const st = evals[i];
+          if (!keyState[ch] || priority[st] > priority[keyState[ch]]) {
+            keyState[ch] = st;
+          }
+        }
+      });
+
+      const rows = [
+        ['Q','W','E','R','T','Y','U','I','O','P'],
+        ['A','S','D','F','G','H','J','K','L'],
+        ['ENTER','Z','X','C','V','B','N','M','⌫']
+      ];
+
+      rows.forEach(r => {
+        const rowEl = document.createElement('div');
+        rowEl.className = 'flex justify-center gap-1 sm:gap-1.5';
+        r.forEach(k => {
+          const btn = document.createElement('button');
+          const isWide = k === 'ENTER' || k === '⌫';
+          let cls = `${isWide ? 'px-2.5 sm:px-3.5 text-xs' : 'flex-1 max-w-[38px] text-xs sm:text-sm'} h-11 rounded-lg font-bold border transition active:scale-95 `;
+          const st = keyState[k];
+          if (st) {
+            cls += `state-${st}`;
+          } else {
+            cls += 'border-[var(--border)] bg-[var(--secondary)] text-[var(--secondary-foreground)] hover:opacity-90';
+          }
+          btn.className = cls;
+          btn.textContent = k;
+          btn.onclick = () => handleWordleKey(k);
+          rowEl.appendChild(btn);
+        });
+        kb.appendChild(rowEl);
+      });
+    }
+
+    function handleWordleKey(k) {
+      if (wordleStatus !== 'playing') return;
+
+      if (k === '⌫' || k === 'BACKSPACE') {
+        if (currentGuess.length > 0) {
+          currentGuess = currentGuess.slice(0, -1);
+          renderWordleBoard();
+        }
+        return;
+      }
+
+      if (k === 'ENTER') {
+        if (currentGuess.length < 5) {
+          const rowEl = document.getElementById(`wordle-row-${wordleGuesses.length}`);
+          if (rowEl) {
+            rowEl.classList.remove('row-shake');
+            void rowEl.offsetWidth;
+            rowEl.classList.add('row-shake');
+          }
+          showToast('Padam 5 letters irukkanum! (5 letters required)');
+          return;
+        }
+
+        const p = filteredWordles[wordleIndex];
+        wordleGuesses.push(currentGuess);
+        const submitted = currentGuess;
+        currentGuess = '';
+
+        if (submitted === p.word) {
+          wordleStatus = 'won';
+          solvedWordleIds.add(p.id);
+          stats.played++;
+          stats.won++;
+          stats.streak++;
+          updateStats();
+          showToast(`🔥 MASS! "${p.word}" Unlocked!`);
+          showWordleLore(true);
+        } else if (wordleGuesses.length >= 6) {
+          wordleStatus = 'lost';
+          stats.played++;
+          stats.streak = 0;
+          updateStats();
+          showToast(`The word was ${p.word}! Try next one!`);
+          showWordleLore(false);
+        }
+
+        renderWordleBoard();
+        renderWordleKeyboard();
+        renderWordleArchive();
+        return;
+      }
+
+      if (/^[A-Z]$/.test(k) && currentGuess.length < 5) {
+        currentGuess += k;
+        renderWordleBoard();
+      }
+    }
+
+    function toggleWordleHint() {
+      document.getElementById('wordle-hint-box').classList.toggle('hidden');
+    }
+
+    function revealWordleAnswer() {
+      if (wordleStatus !== 'playing') return;
+      const p = filteredWordles[wordleIndex];
+      wordleGuesses.push(p.word);
+      currentGuess = '';
+      wordleStatus = 'won';
+      solvedWordleIds.add(p.id);
+      renderWordleBoard();
+      renderWordleKeyboard();
+      renderWordleArchive();
+      showWordleLore(true, true);
+    }
+
+    function showWordleLore(won, revealed = false) {
+      const p = filteredWordles[wordleIndex];
+      const card = document.getElementById('wordle-lore-card');
+      const badge = document.getElementById('lore-status-badge');
+      badge.textContent = revealed ? 'REVEALED' : (won ? `HIT IN ${wordleGuesses.length}/6` : 'CINEMA LORE');
+      badge.className = `text-xs font-bold uppercase px-2 py-0.5 rounded text-white ${won && !revealed ? 'bg-emerald-600' : 'bg-amber-600'}`;
+      document.getElementById('lore-word-title').textContent = `🎬 ${p.word}`;
+      document.getElementById('lore-definition').textContent = p.lore;
+      document.getElementById('lore-dialogue').textContent = p.dialogue;
+      card.classList.remove('hidden');
+    }
+
+    function renderWordleArchive() {
+      const container = document.getElementById('wordle-archive-pills');
+      container.innerHTML = '';
+      document.getElementById('wordle-solved-count').textContent = `${solvedWordleIds.size} / ${TAMIL_WORDLES.length} Unlocked`;
+
+      filteredWordles.forEach((p, idx) => {
+        const isSolved = solvedWordleIds.has(p.id);
+        const isCurrent = idx === wordleIndex;
+        const btn = document.createElement('button');
+        btn.onclick = () => { wordleIndex = idx; loadWordle(idx); };
+        btn.className = `p-2 rounded-lg border text-left transition flex flex-col justify-between ${
+          isCurrent
+            ? 'border-amber-500 bg-amber-500/10'
+            : 'border-[var(--border)] bg-[var(--background)] hover:bg-[var(--secondary)]'
+        }`;
+        btn.innerHTML = `
+          <div class="flex items-center justify-between text-xs font-black">
+            <span>#${idx + 1}</span>
+            <span>${isSolved ? '🟩' : '⬜'}</span>
+          </div>
+          <div class="text-xs font-semibold truncate mt-1 text-[var(--muted-foreground)]">
+            ${isSolved ? p.word : p.clue.split(' ')[0]}
+          </div>
+        `;
+        container.appendChild(btn);
+      });
+    }
+
+    function shareWordleResult() {
+      const p = filteredWordles[wordleIndex];
+      let rows = wordleGuesses.map(g => {
+        return evaluateWordle(g, p.word).map(st =>
+          st === 'correct' ? '🟩' : (st === 'present' ? '🟨' : '⬛')
+        ).join('');
+      }).join('\n');
+      if (!rows) rows = '🟩🟨⬛🟩🟩';
+      const text = `KOLLY-DLE 🎬 ${p.word}\n${rows}\nStreak: 🔥 ${stats.streak}`;
+      navigator.clipboard?.writeText(text);
+      showToast('Copied Kollywood score to clipboard! 📋');
+    }
+
+    /* =========================================================================
+       GAME 2: KOLLYWOOD CONNECTIONS
+       ========================================================================= */
+    function loadQuads(idx) {
+      const b = TAMIL_QUADS[idx];
+      quadsSelected.clear();
+      quadsSolvedTiers = [];
+      quadsMistakes = 4;
+
+      document.getElementById('quads-theme-badge').textContent = `🎬 Kollywood Board #${idx + 1}`;
+      document.getElementById('quads-board-title').textContent = b.title;
+
+      updateStageMeta(
+        'KOLLYWOOD CONNECTIONS',
+        b.title,
+        'Group 16 Tamil cinema items into 4 thematic sets of 4.',
+        idx + 1,
+        TAMIL_QUADS.length
+      );
+
+      quadsItems = [];
+      b.categories.forEach(cat => {
+        cat.items.forEach(item => {
+          quadsItems.push({ text: item, tier: cat.tier, catName: cat.name, catDesc: cat.desc });
+        });
+      });
+      shuffle(quadsItems);
+      renderQuadsStage();
+    }
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+
+    function renderQuadsStage() {
+      // Mistakes
+      const dots = document.getElementById('quads-mistakes-dots');
+      dots.innerHTML = '';
+      for (let i = 0; i < 4; i++) {
+        const d = document.createElement('span');
+        d.className = `w-2.5 h-2.5 rounded-full ${i < quadsMistakes ? 'bg-amber-500' : 'bg-[var(--border)]'}`;
+        dots.appendChild(d);
+      }
+
+      // Solved
+      const solvedEl = document.getElementById('quads-solved-list');
+      solvedEl.innerHTML = '';
+      quadsSolvedTiers.forEach(cat => {
+        const div = document.createElement('div');
+        div.className = `p-3 rounded-xl border tier-${cat.tier} text-center`;
+        div.innerHTML = `
+          <div class="text-xs sm:text-sm font-black uppercase text-[var(--foreground)]">${cat.name}</div>
+          <div class="text-xs font-bold text-[var(--foreground)] mt-0.5">${cat.items.join(' • ')}</div>
+          <div class="text-xs text-[var(--muted-foreground)] mt-0.5">${cat.desc}</div>
+        `;
+        solvedEl.appendChild(div);
+      });
+
+      // Active
+      const grid = document.getElementById('quads-grid');
+      grid.innerHTML = '';
+      const solvedTiersSet = new Set(quadsSolvedTiers.map(c => c.tier));
+      const remaining = quadsItems.filter(it => !solvedTiersSet.has(it.tier));
+
+      remaining.forEach(item => {
+        const isSel = quadsSelected.has(item.text);
+        const btn = document.createElement('button');
+        btn.onclick = () => toggleQuad(item.text);
+        btn.className = `min-h-[64px] p-2.5 rounded-xl border text-xs sm:text-sm font-extrabold uppercase tracking-tight transition flex items-center justify-center text-center leading-snug ${
+          isSel
+            ? 'bg-amber-500 text-black border-amber-500 scale-[0.98] shadow-md'
+            : 'bg-[var(--background)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--secondary)]'
+        }`;
+        btn.textContent = item.text;
+        grid.appendChild(btn);
+      });
+
+      document.getElementById('btn-quads-submit').disabled = quadsSelected.size !== 4;
+    }
+
+    function toggleQuad(text) {
+      if (quadsSelected.has(text)) {
+        quadsSelected.delete(text);
+      } else {
+        if (quadsSelected.size >= 4) {
+          showToast('4 items maximum per group!');
+          return;
+        }
+        quadsSelected.add(text);
+      }
+      renderQuadsStage();
+    }
+
+    function shuffleQuads() {
+      shuffle(quadsItems);
+      renderQuadsStage();
+    }
+
+    function deselectAllQuads() {
+      quadsSelected.clear();
+      renderQuadsStage();
+    }
+
+    function submitQuadsGuess() {
+      if (quadsSelected.size !== 4) return;
+      const b = TAMIL_QUADS[quadsIndex];
+      const selArr = Array.from(quadsSelected);
+
+      for (const cat of b.categories) {
+        const matched = selArr.filter(x => cat.items.includes(x)).length;
+        if (matched === 4) {
+          quadsSolvedTiers.push(cat);
+          quadsSelected.clear();
+          showToast(`✨ Category Solved: ${cat.name}`);
+          if (quadsSolvedTiers.length === 4) {
+            stats.quadsWon++;
+            stats.streak++;
+            updateStats();
+            showToast('🏆 BLOCKBUSTER! Complete Kollywood Board Cleared!');
+          }
+          renderQuadsStage();
+          return;
+        } else if (matched === 3) {
+          quadsMistakes = Math.max(0, quadsMistakes - 1);
+          showToast('🔥 One away! Just 1 movie off!');
+          if (quadsMistakes === 0) revealAllQuads();
+          else renderQuadsStage();
+          return;
+        }
+      }
+
+      quadsMistakes = Math.max(0, quadsMistakes - 1);
+      showToast('Illai! Not a thematic Kollywood match.');
+      if (quadsMistakes === 0) revealAllQuads();
+      else renderQuadsStage();
+    }
+
+    function giveQuadsHint() {
+      const b = TAMIL_QUADS[quadsIndex];
+      const solvedTiersSet = new Set(quadsSolvedTiers.map(c => c.tier));
+      const unsolved = b.categories.find(c => !solvedTiersSet.has(c.tier));
+      if (!unsolved) return;
+      quadsSelected.clear();
+      quadsSelected.add(unsolved.items[0]);
+      quadsSelected.add(unsolved.items[1]);
+      showToast('💡 Hint: Paired 2 items from the same Kollywood set!');
+      renderQuadsStage();
+    }
+
+    function revealAllQuads() {
+      const b = TAMIL_QUADS[quadsIndex];
+      quadsSolvedTiers = [...b.categories];
+      quadsSelected.clear();
+      renderQuadsStage();
+    }
+
+    /* =========================================================================
+       GAME 3: 5x5 TANGLISH MINI
+       ========================================================================= */
+    function loadMini(idx) {
+      const m = TAMIL_MINIS[idx];
+      miniUserGrid = Array.from({ length: 5 }, () => Array(5).fill(''));
+      miniActiveRow = 0;
+      miniActiveCol = 0;
+      miniDir = 'across';
+      miniSeconds = 0;
+
+      if (miniTimerId) clearInterval(miniTimerId);
+      miniTimerId = setInterval(() => {
+        if (currentGame === 'mini') {
+          miniSeconds++;
+          const mins = String(Math.floor(miniSeconds / 60)).padStart(2, '0');
+          const secs = String(miniSeconds % 60).padStart(2, '0');
+          document.getElementById('mini-timer').textContent = `${mins}:${secs}`;
+        }
+      }, 1000);
+
+      document.getElementById('mini-title-badge').textContent = m.title;
+
+      updateStageMeta(
+        '5x5 TANGLISH MINI',
+        m.title,
+        'Speed crossword with Tamil cinema & Chennai culture clues.',
+        idx + 1,
+        TAMIL_MINIS.length
+      );
+
+      renderMiniAll();
+      renderMiniKeyboard();
+    }
+
+    function renderMiniAll() {
+      const m = TAMIL_MINIS[miniIndex];
+      const gridEl = document.getElementById('mini-grid');
+      gridEl.innerHTML = '';
+
+      const numMap = {};
+      m.across.forEach(c => { numMap[`${c.row},${c.col}`] = c.num; });
+      m.down.forEach(c => { numMap[`${c.row},${c.col}`] = c.num; });
+
+      for (let r = 0; r < 5; r++) {
+        for (let c = 0; c < 5; c++) {
+          const cell = document.createElement('div');
+          const isFocused = r === miniActiveRow && c === miniActiveCol;
+          const isLine = (miniDir === 'across' && r === miniActiveRow) || (miniDir === 'down' && c === miniActiveCol);
+
+          let bgCls = 'bg-[var(--card)] text-[var(--foreground)]';
+          if (isFocused) {
+            bgCls = 'bg-amber-500 text-black';
+          } else if (isLine) {
+            bgCls = 'bg-[var(--secondary)] text-[var(--foreground)]';
+          }
+
+          cell.className = `relative rounded-lg flex items-center justify-center text-lg sm:text-xl font-black uppercase cursor-pointer select-none transition ${bgCls}`;
+          cell.onclick = () => {
+            if (miniActiveRow === r && miniActiveCol === c) {
+              miniDir = miniDir === 'across' ? 'down' : 'across';
+            } else {
+              miniActiveRow = r;
+              miniActiveCol = c;
+            }
+            renderMiniAll();
+          };
+
+          const num = numMap[`${r},${c}`];
+          if (num) {
+            const numSpan = document.createElement('span');
+            numSpan.className = 'absolute top-0.5 left-1 text-xs font-bold leading-none opacity-75';
+            numSpan.textContent = num;
+            cell.appendChild(numSpan);
+          }
+
+          const valSpan = document.createElement('span');
+          valSpan.className = 'mt-1';
+          valSpan.textContent = miniUserGrid[r][c];
+          cell.appendChild(valSpan);
+
+          gridEl.appendChild(cell);
+        }
+      }
+
+      // Active Clue
+      const activeObj = miniDir === 'across' ? m.across[miniActiveRow] : m.down[miniActiveCol];
+      if (activeObj) {
+        document.getElementById('mini-active-clue-label').textContent = `${activeObj.num} ${miniDir.toUpperCase()}`;
+        document.getElementById('mini-active-clue-text').textContent = activeObj.clue;
+      }
+
+      // Across list
+      const acrossEl = document.getElementById('mini-clues-across');
+      acrossEl.innerHTML = '';
+      m.across.forEach((cl, idx) => {
+        const li = document.createElement('li');
+        const active = miniDir === 'across' && miniActiveRow === idx;
+        li.className = `p-2 rounded-lg cursor-pointer transition ${active ? 'bg-[var(--secondary)] font-bold text-[var(--foreground)] border border-[var(--border)]' : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'}`;
+        li.innerHTML = `<span class="font-bold text-amber-500 mr-1.5">${cl.num}.</span>${cl.clue}`;
+        li.onclick = () => { miniDir = 'across'; miniActiveRow = idx; miniActiveCol = 0; renderMiniAll(); };
+        acrossEl.appendChild(li);
+      });
+
+      // Down list
+      const downEl = document.getElementById('mini-clues-down');
+      downEl.innerHTML = '';
+      m.down.forEach((cl, idx) => {
+        const li = document.createElement('li');
+        const active = miniDir === 'down' && miniActiveCol === idx;
+        li.className = `p-2 rounded-lg cursor-pointer transition ${active ? 'bg-[var(--secondary)] font-bold text-[var(--foreground)] border border-[var(--border)]' : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'}`;
+        li.innerHTML = `<span class="font-bold text-amber-500 mr-1.5">${cl.num}.</span>${cl.clue}`;
+        li.onclick = () => { miniDir = 'down'; miniActiveCol = idx; miniActiveRow = 0; renderMiniAll(); };
+        downEl.appendChild(li);
+      });
+    }
+
+    function toggleMiniDirection() {
+      miniDir = miniDir === 'across' ? 'down' : 'across';
+      renderMiniAll();
+    }
+
+    function renderMiniKeyboard() {
+      const kb = document.getElementById('mini-keyboard');
+      kb.innerHTML = '';
+      const rows = [
+        ['Q','W','E','R','T','Y','U','I','O','P'],
+        ['A','S','D','F','G','H','J','K','L'],
+        ['⇄','Z','X','C','V','B','N','M','⌫']
+      ];
+      rows.forEach(r => {
+        const rowEl = document.createElement('div');
+        rowEl.className = 'flex justify-center gap-1';
+        r.forEach(k => {
+          const btn = document.createElement('button');
+          btn.className = 'flex-1 h-9 rounded-lg border border-[var(--border)] bg-[var(--secondary)] text-[var(--secondary-foreground)] text-xs font-bold hover:opacity-90';
+          btn.textContent = k;
+          btn.onclick = () => handleMiniKey(k);
+          rowEl.appendChild(btn);
+        });
+        kb.appendChild(rowEl);
+      });
+    }
+
+    function handleMiniKey(k) {
+      if (k === '⇄') { toggleMiniDirection(); return; }
+      if (k === '⌫' || k === 'BACKSPACE') {
+        if (miniUserGrid[miniActiveRow][miniActiveCol] !== '') {
+          miniUserGrid[miniActiveRow][miniActiveCol] = '';
+        } else {
+          stepMini(-1);
+          miniUserGrid[miniActiveRow][miniActiveCol] = '';
+        }
+        renderMiniAll();
+        return;
+      }
+      if (/^[A-Z]$/.test(k)) {
+        miniUserGrid[miniActiveRow][miniActiveCol] = k;
+        checkMiniComplete();
+        stepMini(1);
+        renderMiniAll();
+      }
+    }
+
+    function stepMini(delta) {
+      if (miniDir === 'across') {
+        let nc = miniActiveCol + delta;
+        let nr = miniActiveRow;
+        if (nc > 4) { nc = 0; nr = (nr + 1) % 5; }
+        if (nc < 0) { nc = 4; nr = (nr + 4) % 5; }
+        miniActiveRow = nr; miniActiveCol = nc;
+      } else {
+        let nr = miniActiveRow + delta;
+        let nc = miniActiveCol;
+        if (nr > 4) { nr = 0; nc = (nc + 1) % 5; }
+        if (nr < 0) { nr = 4; nc = (nc + 4) % 5; }
+        miniActiveRow = nr; miniActiveCol = nc;
+      }
+    }
+
+    function checkMiniComplete() {
+      const m = TAMIL_MINIS[miniIndex];
+      for (let r = 0; r < 5; r++) {
+        for (let c = 0; c < 5; c++) {
+          if (miniUserGrid[r][c] !== m.grid[r][c]) return false;
+        }
+      }
+      showToast('🏁 Tanglish 5x5 Mini Completed! Super Hit!');
+      stats.played++;
+      stats.won++;
+      stats.streak++;
+      updateStats();
+      return true;
+    }
+
+    function checkMiniGrid() {
+      const m = TAMIL_MINIS[miniIndex];
+      let cleared = 0;
+      for (let r = 0; r < 5; r++) {
+        for (let c = 0; c < 5; c++) {
+          if (miniUserGrid[r][c] && miniUserGrid[r][c] !== m.grid[r][c]) {
+            miniUserGrid[r][c] = '';
+            cleared++;
+          }
+        }
+      }
+      renderMiniAll();
+      showToast(cleared === 0 ? '✓ All filled letters are correct!' : `Cleared ${cleared} incorrect letters.`);
+    }
+
+    function revealMiniCell() {
+      const m = TAMIL_MINIS[miniIndex];
+      miniUserGrid[miniActiveRow][miniActiveCol] = m.grid[miniActiveRow][miniActiveCol];
+      checkMiniComplete();
+      stepMini(1);
+      renderMiniAll();
+    }
+
+    function revealMiniGrid() {
+      const m = TAMIL_MINIS[miniIndex];
+      for (let r = 0; r < 5; r++) {
+        for (let c = 0; c < 5; c++) {
+          miniUserGrid[r][c] = m.grid[r][c];
+        }
+      }
+      renderMiniAll();
+      showToast('5x5 Kollywood Mini Solved!');
+    }
+
+    /* =========================================================================
+       GAME 4: PUNCH DIALOGUE MATCH
+       ========================================================================= */
+    function initDialogueRound() {
+      dmIndex = 0;
+      dmScore = 0;
+      dmSolvedIndices.clear();
+      dmShuffledActors = TAMIL_DIALOGUES.map((d, i) => ({ text: d.actor, idx: i }));
+      dmShuffledMovies = TAMIL_DIALOGUES.map((d, i) => ({ text: d.movie, idx: i }));
+      shuffle(dmShuffledActors);
+      shuffle(dmShuffledMovies);
+      renderDialogueStage();
+    }
+
+    function resetDialogueRound() {
+      initDialogueRound();
+      showToast('Dialogue round reshuffled!');
+    }
+
+    function renderDialogueStage() {
+      const item = TAMIL_DIALOGUES[dmIndex];
+      document.getElementById('dm-stage-badge').textContent = `SCENE #${dmIndex + 1} OF ${TAMIL_DIALOGUES.length}`;
+      document.getElementById('dm-quote-text').textContent = item.quote;
+      document.getElementById('dm-quote-meaning').textContent = item.meaning;
+      document.getElementById('dm-score-pill').textContent = `Score: ${dmScore} / ${TAMIL_DIALOGUES.length}`;
+
+      document.getElementById('dm-sel-actor').textContent = dmSelected.actor ? dmSelected.actor.text : '—';
+      document.getElementById('dm-sel-movie').textContent = dmSelected.movie ? dmSelected.movie.text : '—';
+
+      // Render Actors Column
+      const actCol = document.getElementById('dm-col-actors');
+      actCol.innerHTML = '';
+      dmShuffledActors.forEach(a => {
+        const isSolved = dmSolvedIndices.has(a.idx);
+        const isSel = dmSelected.actor?.idx === a.idx;
+        const btn = document.createElement('button');
+        btn.disabled = isSolved;
+        btn.onclick = () => { dmSelected.actor = a; renderDialogueStage(); };
+        btn.className = `p-2.5 rounded-xl border text-xs font-bold transition text-center ${
+          isSolved
+            ? 'opacity-35 bg-[var(--secondary)] border-[var(--border)] line-through'
+            : isSel
+              ? 'bg-amber-500 text-black border-amber-500 shadow-sm'
+              : 'bg-[var(--background)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--secondary)]'
+        }`;
+        btn.textContent = a.text;
+        actCol.appendChild(btn);
+      });
+
+      // Render Movies Column
+      const movCol = document.getElementById('dm-col-movies');
+      movCol.innerHTML = '';
+      dmShuffledMovies.forEach(m => {
+        const isSolved = dmSolvedIndices.has(m.idx);
+        const isSel = dmSelected.movie?.idx === m.idx;
+        const btn = document.createElement('button');
+        btn.disabled = isSolved;
+        btn.onclick = () => { dmSelected.movie = m; renderDialogueStage(); };
+        btn.className = `p-2.5 rounded-xl border text-xs font-bold transition text-center ${
+          isSolved
+            ? 'opacity-35 bg-[var(--secondary)] border-[var(--border)] line-through'
+            : isSel
+              ? 'bg-amber-500 text-black border-amber-500 shadow-sm'
+              : 'bg-[var(--background)] text-[var(--foreground)] border-[var(--border)] hover:bg-[var(--secondary)]'
+        }`;
+        btn.textContent = m.text;
+        movCol.appendChild(btn);
+      });
+    }
+
+    function submitDialogueMatch() {
+      if (!dmSelected.actor || !dmSelected.movie) {
+        showToast('Select both the Actor and the Movie first!');
+        return;
+      }
+      if (dmSelected.actor.idx === dmIndex && dmSelected.movie.idx === dmIndex) {
+        dmSolvedIndices.add(dmIndex);
+        dmScore++;
+        stats.streak++;
+        updateStats();
+        dmSelected = { actor: null, movie: null };
+        showToast('⚡ THARUMARU THAKKALI SORU! Exact dialogue match!');
+        if (dmSolvedIndices.size < TAMIL_DIALOGUES.length) {
+          for (let i = 0; i < TAMIL_DIALOGUES.length; i++) {
+            const nextIdx = (dmIndex + 1 + i) % TAMIL_DIALOGUES.length;
+            if (!dmSolvedIndices.has(nextIdx)) {
+              dmIndex = nextIdx;
+              break;
+            }
+          }
+        }
+        renderDialogueStage();
+      } else {
+        showToast('Tappu! That star / movie does not match this scene!');
+      }
+    }
+
+    /* =========================================================================
+       KEYBOARD & MODALS
+       ========================================================================= */
+    function handleKeyInput(e) {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      const key = e.key.toUpperCase();
+
+      if (currentGame === 'wordle') {
+        if (key === 'ENTER' || key === 'BACKSPACE' || /^[A-Z]$/.test(key)) {
+          e.preventDefault();
+          handleWordleKey(key);
+        }
+      } else if (currentGame === 'mini') {
+        if (key === 'BACKSPACE' || /^[A-Z]$/.test(key)) {
+          e.preventDefault();
+          handleMiniKey(key);
+        } else if (key === 'ARROWLEFT') {
+          e.preventDefault(); miniDir = 'across'; stepMini(-1); renderMiniAll();
+        } else if (key === 'ARROWRIGHT') {
+          e.preventDefault(); miniDir = 'across'; stepMini(1); renderMiniAll();
+        } else if (key === 'ARROWUP') {
+          e.preventDefault(); miniDir = 'down'; stepMini(-1); renderMiniAll();
+        } else if (key === 'ARROWDOWN') {
+          e.preventDefault(); miniDir = 'down'; stepMini(1); renderMiniAll();
+        }
+      }
+    }
+
+    function updateStats() {
+      document.getElementById('header-streak-badge').textContent = `🔥 ${stats.streak}`;
+      document.getElementById('stat-played').textContent = stats.played;
+      const pct = stats.played > 0 ? Math.round((stats.won / stats.played) * 100) : 100;
+      document.getElementById('stat-winpct').textContent = `${pct}%`;
+      document.getElementById('stat-streak').textContent = stats.streak;
+      document.getElementById('stat-quads').textContent = stats.quadsWon;
+    }
+
+    function openStatsModal() {
+      updateStats();
+      const m = document.getElementById('modal-stats');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+
+    function openHelpModal() {
+      const m = document.getElementById('modal-help');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+
+    function closeModals() {
+      ['modal-stats', 'modal-help'].forEach(id => {
+        const m = document.getElementById(id);
+        m.classList.add('hidden');
+        m.classList.remove('flex');
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
